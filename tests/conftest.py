@@ -16,7 +16,7 @@ import pytest
 def reset_engine_state():
     """Reset all engine state before each test."""
     # Import and reset before test
-    from infra.bridge import reset
+    from app.infra.bridge import reset
     reset()
 
     # Import all commands to ensure registration

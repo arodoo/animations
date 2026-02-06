@@ -5,11 +5,11 @@
 
 from typing import Any, Dict
 
-from app.registry import register_command
+from app.kernel.registry import register_command
 from app.commands.result_helpers import (
     ok, fail_not_found, fail_missing, fail_missing_args
 )
-from infra.bridge import data
+from app.infra.bridge import data
 
 
 class _SimpleModifier:

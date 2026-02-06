@@ -5,8 +5,8 @@
 
 from typing import Any, Dict, List
 
-from infra.bridge import data, reset
-from app.dispatcher import dispatch_batch
+from app.infra.bridge import data, reset
+from app.kernel.dispatcher import dispatch_batch
 
 # Import commands to trigger registration
 import app.commands  # noqa: F401

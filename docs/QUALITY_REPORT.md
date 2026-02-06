@@ -24,11 +24,12 @@
 
 | Directory | Structure | Item Count | Status |
 |-----------|-----------|------------|--------|
-| Root (`.`) | Folders/Files | 6 items | ✅ PASS |
-| `app/` | Folders/Files | 5 items | ✅ PASS |
+| Root (`.`) | Folders/Files | 5 items | ✅ PASS |
+| `app/` | Folders/Files | 6 items | ✅ PASS |
+| `app/kernel/` | Files | 3 items | ✅ PASS |
 | `app/commands/` | Subpackages | 6 items | ✅ PASS |
 | `tests/` | Folders/Files | 5 items | ✅ PASS |
-| `tests/mocks/` | Subpackages | 5 items | ✅ PASS |
+| `tests/mocks/` | Subpackages | 6 items | ✅ PASS |
 | `docs/` | Files | 6 items | ✅ PASS |
 
 ---

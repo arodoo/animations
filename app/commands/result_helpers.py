@@ -3,8 +3,8 @@
 # Eliminates 80-char violations and provides consistent error messages.
 # All Rights Reserved Arodi Emmanuel
 
-from domain.dispatch_result import DispatchResult
-from domain.errors import ErrorCode
+from app.domain.dispatch_result import DispatchResult
+from app.domain.errors import ErrorCode
 
 
 def ok(data: dict, command: str) -> DispatchResult:

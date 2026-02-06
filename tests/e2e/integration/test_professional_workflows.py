@@ -8,8 +8,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 import pytest
-from infra.bridge import data, context, reset
-from app.dispatcher import dispatch_batch
+from app.infra.bridge import data, context, reset
+from app.kernel.dispatcher import dispatch_batch
 import app.commands  # noqa: F401
 
 

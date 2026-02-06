@@ -9,10 +9,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 import pytest
-from infra.bridge import reset
-from app.dispatcher import dispatch_single, dispatch_batch
-from app.dispatcher import dispatch_batch_stop_on_error
-from app.registry import list_commands
+from app.infra.bridge import reset
+from app.kernel.dispatcher import dispatch_single, dispatch_batch
+from app.kernel.dispatcher import dispatch_batch_stop_on_error
+from app.kernel.registry import list_commands
 import app.commands  # noqa: F401
 
 

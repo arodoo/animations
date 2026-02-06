@@ -5,9 +5,9 @@
 
 from typing import Any, Dict
 
-from app.registry import register_command
+from app.kernel.registry import register_command
 from app.commands.result_helpers import ok, fail_not_found, fail_missing
-from infra.bridge import data, ops
+from app.infra.bridge import data, ops
 
 
 @register_command('create_light')

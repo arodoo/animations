@@ -5,9 +5,9 @@
 
 from typing import Any, Dict
 
-from domain.dispatch_result import DispatchResult
-from app.registry import register_command
-from infra.bridge import data
+from app.domain.dispatch_result import DispatchResult
+from app.kernel.registry import register_command
+from app.infra.bridge import data
 
 
 @register_command('reset_transform')

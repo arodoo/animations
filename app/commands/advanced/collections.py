@@ -5,11 +5,11 @@
 
 from typing import Any, Dict
 
-from app.registry import register_command
+from app.kernel.registry import register_command
 from app.commands.result_helpers import (
     ok, fail_not_found, fail_missing_args, fail_exists
 )
-from infra.bridge import data
+from app.infra.bridge import data
 
 
 class _SimpleCollection:
