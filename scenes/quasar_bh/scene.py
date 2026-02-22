@@ -7,13 +7,13 @@ from typing import Any, Dict
 from app.kernel.dispatcher import dispatch_batch
 import app.commands  # triggers all command registrations
 
-from ._presets import PRESETS
-from ._physics import DISK_RINGS
-from ._env import build_environment
-from ._bh_jets import build_black_hole, build_jets
-from ._disk_build import build_ring
-from ._disk_animate import build_disk_animation
-from ._cam import build_camera
+from .materials._presets import PRESETS
+from .animations._physics import DISK_RINGS
+from .animations._env import build_environment
+from .animations._bh_jets import build_black_hole, build_jets
+from .animations._disk_build import build_ring
+from .animations._disk_animate import build_disk_animation
+from .animations._cam import build_camera
 
 
 def create_scene(quality: str = 'low') -> Dict[str, Any]:

@@ -15,30 +15,50 @@ def create_material(args: Dict[str, Any]) -> DispatchResult:
     """Create a new material with optional emission for glowing objects."""
     mat_name = args.get('name', 'Material')
     color = tuple(args.get('color', (0.8, 0.8, 0.8, 1.0)))
-    emit = args.get('emit', False)
+    emit = bool(args.get('emit', False))
     emit_strength = float(args.get('emit_strength', 5.0))
+    use_noise = bool(args.get('use_noise_texture', False))
+    roughness = float(args.get('roughness', 0.4))
+    normal_strength = float(args.get('normal_strength', 0.0))
 
     mat = data.materials.new(mat_name)
     mat.diffuse_color = color  # solid viewport color
 
     if not is_mock():
-        # Configure node-based material so colors are visible in
-        # Material Preview and Rendered modes.
+        # Node-based PBR material using Principled BSDF
         mat.use_nodes = True
         nodes = mat.node_tree.nodes
         links = mat.node_tree.links
         nodes.clear()
 
+        principled = nodes.new('ShaderNodeBsdfPrincipled')
+        principled.inputs['Base Color'].default_value = color
+        principled.inputs['Roughness'].default_value = roughness
+
+        final_shader_output = principled.outputs['BSDF']
+
+        # Optional emission mix for glowing rings/particles
         if emit:
-            shader = nodes.new('ShaderNodeEmission')
-            shader.inputs['Color'].default_value = color
-            shader.inputs['Strength'].default_value = emit_strength
-        else:
-            shader = nodes.new('ShaderNodeBsdfPrincipled')
-            shader.inputs['Base Color'].default_value = color
+            emit_node = nodes.new('ShaderNodeEmission')
+            emit_node.inputs['Color'].default_value = color
+            emit_node.inputs['Strength'].default_value = emit_strength
+            mix_shader = nodes.new('ShaderNodeMixShader')
+            # use factor 1.0 to prioritize emission when requested
+            links.new(emit_node.outputs['Emission'], mix_shader.inputs[1])
+            links.new(principled.outputs['BSDF'], mix_shader.inputs[2])
+            final_shader_output = mix_shader.outputs[0]
+
+        # Optional normal/bump generated from a noise texture for subtle detail
+        if use_noise and normal_strength > 0.0:
+            noise = nodes.new('ShaderNodeTexNoise')
+            noise.inputs['Scale'].default_value = 6.0
+            bump = nodes.new('ShaderNodeBump')
+            bump.inputs['Strength'].default_value = normal_strength
+            links.new(noise.outputs['Fac'], bump.inputs['Height'])
+            links.new(bump.outputs['Normal'], principled.inputs['Normal'])
 
         output = nodes.new('ShaderNodeOutputMaterial')
-        links.new(shader.outputs[0], output.inputs['Surface'])
+        links.new(final_shader_output, output.inputs['Surface'])
 
     return DispatchResult.ok({'name': mat.name}, command='create_material')
 
