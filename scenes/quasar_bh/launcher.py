@@ -3,9 +3,9 @@
 # HOW TO USE
 #   1. Open Blender → Scripting tab → New text block
 #   2. Paste this entire file
-#   3. Set QUALITY below (start with 'low')
+#   3. Set QUALITY below
 #   4. Press "Run Script"
-#   5. After it finishes: Z → Material Preview (or Rendered) to see colours
+#   5. After it finishes: Z → Rendered (or Material Preview) to see glow
 #      Press SPACE to play the animation
 # ─────────────────────────────────────────────────────────────────────────────
 # All Rights Reserved Arodi Emmanuel
@@ -19,11 +19,12 @@ if PROJECT_PATH not in sys.path:
 
 # ── 2. Quality setting ─────────────────────────────────────────────────────
 #
-#   'low'    →  5 rings,  900 frames ( 30 s) — safe for small GPUs
-#   'medium' →  7 rings, 1800 frames ( 60 s) — Intel i7 + 24 GB RAM
-#   'high'   →  9 rings, 3600 frames (120 s) — workstation only
+#   'low'    →  5 rings,  900 f  ( 30 s) 1280×720   safe on any GPU
+#   'medium' →  7 rings, 1800 f  ( 60 s) 1280×720   Intel i7 + 24 GB
+#   'high'   →  9 rings, 3600 f  (120 s) 1920×1080  DoF + pulses
+#   'ultra'  →  9 rings, 3600 f  (120 s) 1920×1080  + particles
 #
-QUALITY = 'low'
+QUALITY = 'ultra'
 
 # ── 3. Run ────────────────────────────────────────────────────────────────
 from scenes.quasar_bh.scene import create_scene
@@ -48,5 +49,5 @@ if __name__ == '__main__':
             print(f"    [FAIL] {r.command_name}: {r.error}")
 
     print("\n" + "=" * 60)
-    print("  Done — Z → Material Preview, then SPACE to play")
+    print("  Done — Z → Rendered mode, then SPACE to play")
     print("=" * 60)
