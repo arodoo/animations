@@ -3,24 +3,41 @@
 # All Rights Reserved Arodi Emmanuel
 
 from typing import Any, Dict, List
+from app.kernel.registry import register_command
+from . import _physics
+
 
 _JET_SPECS = [('JetNorth', 28), ('JetSouth', -28)]
 
 
 def build_black_hole() -> List[Dict]:
-    """Central black hole — pure black, non-emissive sphere."""
+    """Central black hole — pure black, non-emissive sphere.
+
+    Spawn a higher-resolution, smooth sphere sized to the Schwarzschild
+    radius so it aligns visually with the relativistic disk geometry.
+    """
+    # Use the scene-normalised Schwarzschild radius for visual scale.
+    r_s = float(_physics.SCHWARZSCHILD_RADIUS)
+    scale_val = max(0.05, r_s)  # guard against zero/too-small values
+
     return [
         {'cmd': 'create_material', 'args': {
             'name': 'BlackHoleMat', 'color': (0, 0, 0, 1),
         }},
         {'cmd': 'spawn_primitive', 'args': {
-            'type': 'sphere', 'name': 'BlackHole',
+            'type': 'sphere',
+            'name': 'BlackHole',
+            # Request higher tessellation and smooth shading for a clean rim
+            'segments': 64,
+            'ring_count': 32,
+            'shade_smooth': True,
+            'subsurf_levels': 2,
         }},
         {'cmd': 'assign_material', 'args': {
             'object': 'BlackHole', 'material': 'BlackHoleMat',
         }},
         {'cmd': 'scale_object', 'args': {
-            'name': 'BlackHole', 'scale': (2, 2, 2),
+            'name': 'BlackHole', 'scale': (scale_val, scale_val, scale_val),
         }},
     ]
 

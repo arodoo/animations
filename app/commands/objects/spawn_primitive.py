@@ -33,7 +33,20 @@ def spawn_primitive(args: Dict[str, Any]) -> DispatchResult:
             command='spawn_primitive'
         )
 
-    PRIMITIVE_MAP[primitive_type](location=location)
+    # Forward supported kwargs from the args dict to the primitive operator.
+    # We explicitly pop out our control keys and pass the rest through so
+    # callers can request segments/subdivisions/major_radius etc.
+    op_kwargs = dict(args)
+    # Remove keys not accepted by the bpy ops
+    for k in ('type', 'name', 'location'):
+        op_kwargs.pop(k, None)
+
+    try:
+        PRIMITIVE_MAP[primitive_type](location=location, **op_kwargs)
+    except TypeError:
+        # Fallback: some mock/bridge implementations may not accept extra
+        # kwargs — call without extras in that case.
+        PRIMITIVE_MAP[primitive_type](location=location)
 
     # Use the active object (set by the op) to rename — works in both Blender and mock
     if name:
@@ -42,6 +55,25 @@ def spawn_primitive(args: Dict[str, Any]) -> DispatchResult:
             obj.name = name
             if obj.data:
                 obj.data.name = name
+
+            # Optional: apply smooth shading if requested
+            shade_smooth = args.get('shade_smooth', False)
+            if shade_smooth and getattr(obj, 'data', None):
+                try:
+                    for poly in obj.data.polygons:
+                        poly.use_smooth = True
+                except Exception:
+                    # Ignore in mocks or if geometry API is absent
+                    pass
+
+            # Optional: add a subdivision surface modifier if requested
+            subsurf_levels = args.get('subsurf_levels')
+            if subsurf_levels and getattr(obj, 'modifiers', None) is not None:
+                try:
+                    obj.modifiers.new('Subsurf', type='SUBSURF')
+                    obj.modifiers['Subsurf'].levels = int(subsurf_levels)
+                except Exception:
+                    pass
 
     return DispatchResult.ok(
         data={'type': primitive_type, 'location': location},
