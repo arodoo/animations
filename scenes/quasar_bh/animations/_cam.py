@@ -5,16 +5,17 @@
 import math
 from typing import Any, Dict, List
 
-_CAM_RADIUS = 22      # orbital sphere radius (Blender units)
-_FOCAL_LENGTH = 35.0  # mm — wide cinematic lens
+_CAM_RADIUS = 60      # larger orbital radius so camera can view the singularity from above
+_FOCAL_LENGTH = 85.0  # mm — telephoto for compression and emphasis on center
 
 
 def build_camera(
     total_frames: int, cam_step: int, dof: bool,
 ) -> List[Dict]:
     """
-    Spherical orbit: azimuth sweeps 270°, elevation oscillates
-    20° → 45° → 20°. Track To constraint faces the origin.
+    Spherical orbit: azimuth sweeps full 360° over the full timeline.
+    Elevation oscillates slightly to capture different angles. The camera
+    is placed at a modest distance for an intimate cinematic orbit.
     """
     r = _CAM_RADIUS
     cmds: List[Dict] = [
@@ -26,13 +27,26 @@ def build_camera(
             'focal_length': _FOCAL_LENGTH,
         }},
     ]
+    # Use the full timeline for a complete orbit; keyframe density controlled
+    # by `cam_step`. We avoid placing the camera on the polar axis (where
+    # jets originate). Instead we keep an off-axis top-down viewpoint so the
+    # jets remain visible, and the camera orbits panoramically around the
+    # center. A brief dolly-in near the middle reveals the singularity but
+    # not along the jet axis.
     for f in range(1, total_frames + 1, cam_step):
         t = (f - 1) / max(total_frames - 1, 1)
-        az = t * 2 * math.pi * 0.75
-        el = math.radians(20 + 25 * math.sin(t * math.pi))
-        x = r * math.cos(el) * math.cos(az)
-        y = r * math.cos(el) * math.sin(az)
-        z = r * math.sin(el)
+        az = t * 2 * math.pi  # full 360° sweep
+        # elevation around 45° ± 10° to avoid polar axis and keep jets in view
+        el = math.radians(45 + 10 * math.sin(t * 2 * math.pi))
+
+        # Dolly-in close pass near t=0.5 using a Gaussian falloff; reduce
+        # strength so we don't go directly into jet cone.
+        dodge = math.exp(-((t - 0.5) / 0.08) ** 2)
+        r_local = r * (1.0 - 0.35 * dodge)
+
+        x = r_local * math.cos(el) * math.cos(az)
+        y = r_local * math.cos(el) * math.sin(az)
+        z = r_local * math.sin(el)
         cmds.append({'cmd': 'move_object', 'args': {
             'name':     'SceneCamera',
             'location': (x, y, z),
@@ -42,10 +56,11 @@ def build_camera(
         'name': 'SceneCamera', 'target': (0, 0, 0),
     }})
     if dof:
+        # Focus near the inner disk radius to emphasize the singularity.
         cmds.append({'cmd': 'set_depth_of_field', 'args': {
             'name':           'SceneCamera',
             'enabled':        True,
-            'focus_distance': float(_CAM_RADIUS),
-            'fstop':          2.8,
+            'focus_distance': 3.0,
+            'fstop':          1.8,
         }})
     return cmds
