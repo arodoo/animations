@@ -1,0 +1,40 @@
+# --- Entornos Virtuales y Dependencias (Crítico) ---
+# Evita que Claude lea miles de líneas de librerías que ya conoces
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+node_modules/
+
+# --- Editorial Moby Edições (Archivos Pesados) ---
+# Los formatos de publicación consumen demasiada cuota de entrada
+*.epub
+*.mobi
+*.pdf
+*.docx
+# Ignora la carpeta de salida de tus libros
+dist/
+build/
+
+# --- Animación y Blender (Binarios) ---
+# Estos archivos no son texto y Claude no puede "leer" su contenido real
+*.blend
+*.blend1
+*.fbx
+*.obj
+*.png
+*.jpg
+*.jpeg
+*.mp4
+
+# --- Bases de Datos y Logs ---
+*.sqlite3
+*.db
+npm-debug.log*
+
+# --- Configuración de IDE y Git ---
+.git/
+.vscode/
+.idea/
+.clauderc
