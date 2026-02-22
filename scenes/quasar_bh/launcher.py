@@ -26,7 +26,18 @@ if PROJECT_PATH not in sys.path:
 #
 QUALITY = 'ultra'
 
-# ── 3. Run ────────────────────────────────────────────────────────────────
+# ── 3. Purge stale bytecode + cached modules ───────────────────────────────
+import importlib
+import shutil
+from pathlib import Path
+
+for _pycache in Path(PROJECT_PATH).rglob('__pycache__'):
+    shutil.rmtree(_pycache, ignore_errors=True)
+
+for _mod in [k for k in sys.modules if k.startswith(('scenes', 'app'))]:
+    del sys.modules[_mod]
+
+# ── 4. Run ────────────────────────────────────────────────────────────────
 from scenes.quasar_bh.scene import create_scene
 
 if __name__ == '__main__':
