@@ -7,26 +7,34 @@ from typing import Any, Dict
 
 from app.kernel.registry import register_command
 from app.commands.result_helpers import ok, fail_not_found, fail_missing
-from app.infra.bridge import data, ops
+from app.infra.bridge import data, ops, context, is_mock
 
 
 @register_command('create_light')
 def create_light(args: Dict[str, Any]):
-    """Create a light object."""
+    """Create a light object with optional color and energy."""
     name = args.get('name', 'Light')
-    light_type = args.get('type', 'POINT')
+    light_type = args.get('type', 'POINT').upper()
     location = tuple(args.get('location', (0, 0, 5)))
+    color = args.get('color', (1.0, 1.0, 1.0))
+    energy = float(args.get('energy', 1000.0))
 
-    ops.light.add_light(light_type=light_type, location=location)
+    if is_mock():
+        ops.light.add_light(light_type=light_type, location=location)
+    else:
+        # Real Blender: lights live under bpy.ops.object, not bpy.ops.light
+        ops.object.light_add(type=light_type, location=location)
 
-    objs = list(data.objects.values())
-    if objs and name != 'Light':
-        obj = objs[-1]
-        old_name = obj.name
+    obj = context.active_object
+    if obj and name:
         obj.name = name
-        data.objects._objects[name] = data.objects._objects.pop(old_name)
+        if obj.data:
+            obj.data.name = name
+            # Set color (RGB only — Blender lights don't use alpha) and energy
+            obj.data.color = tuple(color)[:3]
+            obj.data.energy = energy
 
-    return ok({'name': name, 'type': light_type}, 'create_light')
+    return ok({'name': name, 'type': light_type, 'energy': energy}, 'create_light')
 
 
 @register_command('set_light_energy')

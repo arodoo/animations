@@ -7,17 +7,38 @@ from typing import Any, Dict
 
 from app.domain.dispatch_result import DispatchResult
 from app.kernel.registry import register_command
-from app.infra.bridge import data
+from app.infra.bridge import data, is_mock
 
 
 @register_command('create_material')
 def create_material(args: Dict[str, Any]) -> DispatchResult:
-    """Create a new material."""
+    """Create a new material with optional emission for glowing objects."""
     mat_name = args.get('name', 'Material')
-    color = args.get('color', (0.8, 0.8, 0.8, 1.0))
+    color = tuple(args.get('color', (0.8, 0.8, 0.8, 1.0)))
+    emit = args.get('emit', False)
+    emit_strength = float(args.get('emit_strength', 5.0))
 
     mat = data.materials.new(mat_name)
-    mat.diffuse_color = tuple(color)
+    mat.diffuse_color = color  # solid viewport color
+
+    if not is_mock():
+        # Configure node-based material so colors are visible in
+        # Material Preview and Rendered modes.
+        mat.use_nodes = True
+        nodes = mat.node_tree.nodes
+        links = mat.node_tree.links
+        nodes.clear()
+
+        if emit:
+            shader = nodes.new('ShaderNodeEmission')
+            shader.inputs['Color'].default_value = color
+            shader.inputs['Strength'].default_value = emit_strength
+        else:
+            shader = nodes.new('ShaderNodeBsdfPrincipled')
+            shader.inputs['Base Color'].default_value = color
+
+        output = nodes.new('ShaderNodeOutputMaterial')
+        links.new(shader.outputs[0], output.inputs['Surface'])
 
     return DispatchResult.ok({'name': mat.name}, command='create_material')
 
@@ -42,7 +63,12 @@ def assign_material(args: Dict[str, Any]) -> DispatchResult:
         return DispatchResult.fail(
             f"Mat not found: {mat_name}", command='assign_material')
 
-    obj.material_slots.append(mat)
+    if is_mock():
+        obj.material_slots.append(mat)
+    else:
+        # In Blender, material_slots is read-only; append via the mesh data
+        obj.data.materials.append(mat)
+
     return DispatchResult.ok(
         {'object': obj_name, 'material': mat_name},
         command='assign_material'

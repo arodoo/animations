@@ -1,35 +1,43 @@
-# File: blender_launcher.py
+# File: scenes/quasar_bh/launcher.py
 # ─────────────────────────────────────────────────────────────────────────────
-# Root launcher — delegates to whichever scene is active.
-# You can also paste the scene-specific launcher directly in Blender:
-#   scenes/quasar_bh/launcher.py
+# HOW TO USE
+#   1. Open Blender → Scripting tab → New text block
+#   2. Paste this entire file
+#   3. Set QUALITY below (start with 'low')
+#   4. Press "Run Script"
+#   5. After it finishes: Z → Material Preview (or Rendered) to see colours
+#      Press SPACE to play the animation
 # ─────────────────────────────────────────────────────────────────────────────
 # All Rights Reserved Arodi Emmanuel
 
 import sys
 
+# ── 1. Project path ────────────────────────────────────────────────────────
 PROJECT_PATH = r"d:\zProyectos\01Python\animations"
 if PROJECT_PATH not in sys.path:
     sys.path.insert(0, PROJECT_PATH)
 
-# ── Active scene ───────────────────────────────────────────────────────────
-from scenes.quasar_bh.scene import create_scene as run_scene
-
-# ── Quality ────────────────────────────────────────────────────────────────
-#   'low'    →  5 rings,  900 frames ( 30 s)
-#   'medium' →  7 rings, 1800 frames ( 60 s)
-#   'high'   →  9 rings, 3600 frames (120 s)
+# ── 2. Quality setting ─────────────────────────────────────────────────────
+#
+#   'low'    →  5 rings,  900 frames ( 30 s) — safe for small GPUs
+#   'medium' →  7 rings, 1800 frames ( 60 s) — Intel i7 + 24 GB RAM
+#   'high'   →  9 rings, 3600 frames (120 s) — workstation only
+#
 QUALITY = 'low'
+
+# ── 3. Run ────────────────────────────────────────────────────────────────
+from scenes.quasar_bh.scene import create_scene
 
 if __name__ == '__main__':
     print("=" * 60)
     print(f"  QUASAR BLACK HOLE  [quality = {QUALITY}]")
     print("=" * 60)
 
-    result = run_scene(quality=QUALITY)
+    result = create_scene(quality=QUALITY)
 
     ok_count = sum(1 for r in result['results'] if r.success)
     total    = len(result['results'])
+
     print(f"\n  Frames   : {result['frames']}")
     print(f"  Commands : {ok_count} / {total} OK")
 

@@ -1,81 +1,101 @@
 # Testing Guide
 
-Comprehensive guide for testing the animation engine.
+The test suite runs entirely without Blender using a full API mock.
 
 ---
 
 ## Quick Start
 
 ```bash
-# Run all E2E tests
+# All E2E tests
 python -m pytest tests/e2e/ -v
 
-# Run specific test file
-python -m pytest tests/e2e/test_collections.py -v
+# Single category
+python -m pytest tests/e2e/scene/ -v
 
-# Run with coverage
+# With coverage
 python -m pytest tests/e2e/ --cov=app --cov-report=html
 ```
 
 ---
 
-## Test Structure
+## Structure
 
 ```
 tests/
-├── conftest.py           # Shared fixtures
-├── mocks/                # Blender API mocks
-│   ├── mock_object.py
-│   ├── mock_camera.py
-│   ├── mock_light.py
-│   ├── mock_material.py
-│   ├── mock_modifier.py
-│   ├── mock_collection.py
-│   ├── bpy_data.py
-│   ├── bpy_ops.py
-│   └── ...
-└── e2e/                  # End-to-end tests
-    ├── test_spawn_commands.py
-    ├── test_transform_commands.py
-    ├── test_keyframe_commands.py
-    ├── test_hierarchy_commands.py
-    ├── test_object_management.py
-    ├── test_materials.py
-    ├── test_camera_lights.py
-    ├── test_modifiers.py
-    ├── test_collections.py
-    └── test_professional_workflows.py
+├── conftest.py           # Auto-reset fixture (runs before every test)
+├── mocks/                # Full Blender API mock
+│   ├── core/             # bpy_mock, bpy_data, bpy_context, vector3, anim_data
+│   ├── data/             # Collection classes (objects, meshes, materials…)
+│   ├── entities/         # MockObject, MockCamera, MockLight, MockMaterial…
+│   └── ops/              # bpy_ops — mesh / object / camera / light operators
+├── e2e/                  # End-to-end tests, one subfolder per command category
+│   ├── objects/
+│   ├── transforms/
+│   ├── scene/
+│   ├── advanced/
+│   └── integration/
+├── demos/                # Runnable demo scripts (not pytest)
+└── runners/              # CLI runners for demos
+```
+
+---
+
+## The Mock System
+
+Every `bpy.*` access goes through `app/infra/bridge.py`. When Blender is
+absent the bridge loads `tests/mocks/core/bpy_mock.py` instead.
+
+| Mock class | Simulates |
+|------------|-----------|
+| `MockObject` | `bpy.types.Object` — transforms, keyframes, materials, parent |
+| `MockCamera` | `bpy.types.Camera` — lens, dof |
+| `MockLight` | `bpy.types.Light` — energy, color, type |
+| `MockMaterial` | `bpy.types.Material` — diffuse_color |
+| `ObjectsCollection` | `bpy.data.objects` — get, new, remove, link |
+| `MeshOps` | `bpy.ops.mesh.*` — all primitive_*_add calls |
+| `ObjectOps` | `bpy.ops.object.*` — camera_add, light_add, empty_add, delete |
+
+### Ops coverage
+
+```
+MeshOps:   primitive_cube_add, primitive_uv_sphere_add, primitive_plane_add,
+           primitive_torus_add, primitive_cone_add, primitive_cylinder_add
+
+ObjectOps: camera_add, light_add, empty_add, delete, select_all
 ```
 
 ---
 
 ## Writing Tests
 
-### Basic Test Structure
-
 ```python
-import pytest
-from app.dispatcher import dispatch_single
-from infra.bridge import data
+from app.kernel.dispatcher import dispatch_single
+from app.infra.bridge import data
 
-class TestMyCommand:
-    def test_basic(self):
+class TestSpawnPrimitive:
+    def test_sphere_is_named(self):
         result = dispatch_single({
-            'cmd': 'my_command',
-            'args': {'name': 'Test'}
+            'cmd': 'spawn_primitive',
+            'args': {'type': 'sphere', 'name': 'MySphere'}
         })
         assert result.success
-        assert 'Test' in data.objects
+        assert data.objects.get('MySphere') is not None
+
+    def test_unknown_type_fails(self):
+        result = dispatch_single({
+            'cmd': 'spawn_primitive',
+            'args': {'type': 'octahedron'}
+        })
+        assert not result.success
 ```
 
-### Test Fixtures
-
-The `conftest.py` provides automatic reset:
+### Auto-reset fixture (`conftest.py`)
 
 ```python
 @pytest.fixture(autouse=True, scope='function')
 def reset_engine_state():
-    from infra.bridge import reset
+    from app.infra.bridge import reset
     reset()
     import app.commands
     yield
@@ -84,35 +104,21 @@ def reset_engine_state():
 
 ---
 
-## Mock System
-
-The mock system replicates Blender's API:
-
-| Mock | Simulates |
-|------|-----------|
-| `MockObject` | bpy.types.Object |
-| `MockCamera` | bpy.types.Camera |
-| `MockLight` | bpy.types.Light |
-| `MockMaterial` | bpy.types.Material |
-| `MockModifier` | bpy.types.Modifier |
-| `MockCollection` | bpy.types.Collection |
-
----
-
 ## Test Categories
 
-| Category | Tests | Focus |
-|----------|-------|-------|
-| Spawn | 5 | Object creation |
-| Transform | 6 | Position/rotation/scale |
-| Keyframe | 6 | Animation data |
-| Hierarchy | 5 | Parent/child |
-| Management | 9 | Clone/rename/select |
-| Materials | 5 | Material system |
-| Camera/Lights | 8 | Cinematography |
-| Modifiers | 5 | Mesh deformation |
-| Collections | 5 | Scene organization |
-| Workflows | 3 | Integration tests |
+| Category | Tests | What is covered |
+|----------|-------|----------------|
+| Spawn / objects | 5 | Primitive creation, naming |
+| Transforms | 6 | Absolute move / rotate / scale |
+| Relative transforms | 5 | Delta move / rotate / scale |
+| Keyframes | 6 | Insert, delete, clear |
+| Hierarchy | 5 | Parent / child, delete |
+| Management | 9 | Clone, rename, select, visibility |
+| Materials | 5 | Create, assign, color |
+| Camera & lights | 8 | Create, target, focal, DOF, energy |
+| Modifiers | 5 | Add, remove, configure |
+| Collections | 5 | Create, link, unlink |
+| Integration | 3 | Multi-command workflows |
 
 **Total: 75 tests**
 
@@ -120,8 +126,8 @@ The mock system replicates Blender's API:
 
 ## Best Practices
 
-1. **One assertion per test** when possible
-2. **Use descriptive names**: `test_clone_preserves_transforms`
-3. **Test error cases**: Missing args, not found
-4. **Reset state**: Use conftest fixture
-5. **Keep tests fast**: No I/O, no sleep
+1. **One concept per test** — one behaviour, one failure mode
+2. **Descriptive names** — `test_clone_preserves_location` not `test_clone`
+3. **Test failure paths** — missing args, not found, wrong type
+4. **Never rely on test order** — conftest resets state automatically
+5. **No I/O, no sleep** — keep the suite under 1 second total

@@ -7,3 +7,4 @@ from . import animation_ext
 from . import cameras
 from . import lights
 from . import materials
+from . import world_settings

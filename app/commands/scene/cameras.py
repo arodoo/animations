@@ -7,32 +7,38 @@ from typing import Any, Dict
 
 from app.kernel.registry import register_command
 from app.commands.result_helpers import ok, fail_not_found, fail_missing
-from app.infra.bridge import data, ops
+from app.infra.bridge import data, ops, context, is_mock
 
 
 @register_command('create_camera')
 def create_camera(args: Dict[str, Any]):
-    """Create a camera object."""
+    """Create a camera object and set it as the active scene camera."""
     name = args.get('name', 'Camera')
     location = tuple(args.get('location', (0, 0, 5)))
 
-    ops.camera.add_camera(location=location)
+    if is_mock():
+        ops.camera.add_camera(location=location)
+    else:
+        # Real Blender: camera lives under bpy.ops.object, not bpy.ops.camera
+        ops.object.camera_add(location=location)
 
-    objs = list(data.objects.values())
-    if objs and name != 'Camera':
-        obj = objs[-1]
-        old_name = obj.name
+    obj = context.active_object
+    if obj and name:
         obj.name = name
-        data.objects._objects[name] = data.objects._objects.pop(old_name)
+        if obj.data:
+            obj.data.name = name
+
+    if not is_mock() and obj:
+        context.scene.camera = obj
 
     return ok({'name': name, 'location': location}, 'create_camera')
 
 
 @register_command('set_camera_target')
 def set_camera_target(args: Dict[str, Any]):
-    """Set camera look-at target position."""
+    """Make a camera always look at a target point via a Track To constraint."""
     cam_name = args.get('name')
-    target = args.get('target', (0, 0, 0))
+    target = tuple(args.get('target', (0, 0, 0)))
 
     if not cam_name:
         return fail_missing('name', 'set_camera_target')
@@ -40,6 +46,18 @@ def set_camera_target(args: Dict[str, Any]):
     obj = data.objects.get(cam_name)
     if not obj:
         return fail_not_found(cam_name, 'set_camera_target')
+
+    if not is_mock():
+        # Create an Empty at the target location so the constraint has a target
+        ops.object.empty_add(location=target)
+        empty = context.active_object
+        empty.name = f"_target_{cam_name}"
+
+        # Add Track To constraint: camera -Z points at the empty, Y is up
+        constraint = obj.constraints.new(type='TRACK_TO')
+        constraint.target = empty
+        constraint.track_axis = 'TRACK_NEGATIVE_Z'
+        constraint.up_axis = 'UP_Y'
 
     return ok({'name': cam_name, 'target': target}, 'set_camera_target')
 

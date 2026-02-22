@@ -7,7 +7,7 @@ from typing import Any, Dict
 
 from app.domain.dispatch_result import DispatchResult
 from app.kernel.registry import register_command
-from app.infra.bridge import data, context
+from app.infra.bridge import data, context, is_mock
 
 
 @register_command('clone_object')
@@ -49,6 +49,21 @@ def rename_object(args: Dict[str, Any]) -> DispatchResult:
     data.objects._objects[new_name] = obj
 
     return DispatchResult.ok({'old': old_name, 'new': new_name}, command='rename_object')
+
+
+@register_command('clear_scene')
+def clear_scene(args: Dict[str, Any]) -> DispatchResult:
+    """Delete all objects in the scene (clears Blender's default cube, etc.)."""
+    if is_mock():
+        data.objects._objects.clear()
+        context.active_object = None
+    else:
+        # In Blender: remove every object from bpy.data so it disappears from
+        # the scene. do_unlink=True also removes it from all collections.
+        for obj in list(data.objects):
+            data.objects.remove(obj, do_unlink=True)
+
+    return DispatchResult.ok({}, command='clear_scene')
 
 
 @register_command('select_object')

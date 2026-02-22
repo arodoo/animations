@@ -50,9 +50,83 @@ class MeshOps:
         bpy_context.context.active_object = obj
         return {'FINISHED'}
 
+    @staticmethod
+    def primitive_torus_add(
+        location: tuple = (0, 0, 0),
+        **kwargs
+    ) -> Set[str]:
+        """Add a torus primitive."""
+        mesh = bpy_data.data.meshes.new("Torus")
+        obj = bpy_data.data.objects.new("Torus", mesh)
+        obj.location = location
+        bpy_context.context.view_layer.objects.link(obj)
+        bpy_context.context.active_object = obj
+        return {'FINISHED'}
+
+    @staticmethod
+    def primitive_cone_add(
+        location: tuple = (0, 0, 0),
+        **kwargs
+    ) -> Set[str]:
+        """Add a cone primitive."""
+        mesh = bpy_data.data.meshes.new("Cone")
+        obj = bpy_data.data.objects.new("Cone", mesh)
+        obj.location = location
+        bpy_context.context.view_layer.objects.link(obj)
+        bpy_context.context.active_object = obj
+        return {'FINISHED'}
+
+    @staticmethod
+    def primitive_cylinder_add(
+        location: tuple = (0, 0, 0),
+        **kwargs
+    ) -> Set[str]:
+        """Add a cylinder primitive."""
+        mesh = bpy_data.data.meshes.new("Cylinder")
+        obj = bpy_data.data.objects.new("Cylinder", mesh)
+        obj.location = location
+        bpy_context.context.view_layer.objects.link(obj)
+        bpy_context.context.active_object = obj
+        return {'FINISHED'}
+
 
 class ObjectOps:
     """Mock object operators (bpy.ops.object)."""
+
+    @staticmethod
+    def light_add(type: str = 'POINT', location: tuple = (0, 0, 0), **kwargs) -> Set[str]:
+        """Add a light object (mirrors bpy.ops.object.light_add)."""
+        from ..entities.mock_light import MockLight
+        light_data = MockLight("Light", type)
+        bpy_data.data.lights[light_data.name] = light_data
+        obj = bpy_data.data.objects.new("Light", light_data)
+        obj.type = "LIGHT"
+        obj.location = location
+        bpy_context.context.view_layer.objects.link(obj)
+        bpy_context.context.active_object = obj
+        return {'FINISHED'}
+
+    @staticmethod
+    def camera_add(location: tuple = (0, 0, 0), **kwargs) -> Set[str]:
+        """Add a camera (mirrors bpy.ops.object.camera_add)."""
+        from ..entities.mock_camera import MockCamera
+        cam_data = MockCamera("Camera")
+        bpy_data.data.cameras[cam_data.name] = cam_data
+        obj = bpy_data.data.objects.new("Camera", cam_data)
+        obj.type = "CAMERA"
+        obj.location = location
+        bpy_context.context.view_layer.objects.link(obj)
+        bpy_context.context.active_object = obj
+        return {'FINISHED'}
+
+    @staticmethod
+    def empty_add(location: tuple = (0, 0, 0), **kwargs) -> Set[str]:
+        """Add an empty object."""
+        obj = bpy_data.data.objects.new("Empty", None)
+        obj.location = location
+        bpy_context.context.view_layer.objects.link(obj)
+        bpy_context.context.active_object = obj
+        return {'FINISHED'}
 
     @staticmethod
     def delete() -> Set[str]:

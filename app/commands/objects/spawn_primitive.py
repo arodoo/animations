@@ -7,13 +7,16 @@ from typing import Any, Dict
 
 from app.domain.dispatch_result import DispatchResult
 from app.kernel.registry import register_command
-from app.infra.bridge import ops, data
+from app.infra.bridge import ops, data, context
 
 
 PRIMITIVE_MAP = {
     'cube': ops.mesh.primitive_cube_add,
     'sphere': ops.mesh.primitive_uv_sphere_add,
     'plane': ops.mesh.primitive_plane_add,
+    'torus': ops.mesh.primitive_torus_add,
+    'cone': ops.mesh.primitive_cone_add,
+    'cylinder': ops.mesh.primitive_cylinder_add,
 }
 
 
@@ -32,13 +35,13 @@ def spawn_primitive(args: Dict[str, Any]) -> DispatchResult:
 
     PRIMITIVE_MAP[primitive_type](location=location)
 
-    # Get the created object and rename if needed
-    created_objects = list(data.objects.values())
-    if created_objects and name:
-        obj = created_objects[-1]
-        old_name = obj.name
-        obj.name = name
-        data.objects._objects[name] = data.objects._objects.pop(old_name)
+    # Use the active object (set by the op) to rename — works in both Blender and mock
+    if name:
+        obj = context.active_object
+        if obj:
+            obj.name = name
+            if obj.data:
+                obj.data.name = name
 
     return DispatchResult.ok(
         data={'type': primitive_type, 'location': location},

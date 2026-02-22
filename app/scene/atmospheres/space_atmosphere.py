@@ -51,7 +51,8 @@ def _generate_stars_around_cluster(
         stars.append({
             'cmd': 'spawn_primitive',
             'args': {
-                'type': 'plane',
+                # Spheres are visible from any angle; planes disappear edge-on
+                'type': 'sphere',
                 'name': f'Star_{random.randint(100000, 999999)}',
                 'location': (x, y, z)
             }

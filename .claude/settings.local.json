@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"D:/zProyectos/01Python/animations\" && git rm docs/commands.md docs/error_handling.md docs/QUALITY_REPORT.md 2>&1)"
+    ]
+  }
+}

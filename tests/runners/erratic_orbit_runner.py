@@ -11,7 +11,7 @@ project_root = Path(__file__).parent.parent.parent
 if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
-from tests.demos.erratic_orbit_demo import crear_orbita_erratica
+from tests.demos.erratic_orbit_demo import crear_orbita_relativista
 from app.infra.bridge import data
 
 def main() -> None:
@@ -20,7 +20,7 @@ def main() -> None:
     print("ERRATIC ORBIT DEMO - 30 SECONDS WITH STARFIELD")
     print("=" * 60)
 
-    result = crear_orbita_erratica()
+    result = crear_orbita_relativista()
     
     success_count = sum(1 for r in result['results'] if r.success)
     print(f"\nTotal comandos enviados: {len(result['results'])}")
