@@ -7,8 +7,8 @@ from math import sqrt, sin, pi
 from ._physics import SCHWARZSCHILD_RADIUS
 
 JET_LORENTZ_FACTOR: float = 7.0   # Γ — typical AGN quasar jet
-JET_REST_LENGTH: float = 80.0    # rest-frame half-length (scene units)
-JET_BASE_RADIUS: float = .25      # funnel base radius at collimation pivot
+JET_REST_LENGTH: float = 300.0   # rest-frame half-length (scene units)
+JET_BASE_RADIUS: float = 0.11     # funnel base radius at collimation pivot
 JET_PRECESSION_FRACTION: float = 0.25  # cycles per animation
 JET_PRECESSION_DEGREES: float = 3.5   # max tilt half-angle (deg)
 JET_KNOT_COUNT: int = 10               # discrete plasma knots per jet

@@ -16,9 +16,9 @@ if PROJECT_PATH not in sys.path:
 from scenes.quasar_bh.scene import create_scene as run_scene
 
 # ── Quality ────────────────────────────────────────────────────────────────
-#   'low'    →  5 rings,  900 frames ( 30 s)
-#   'medium' →  7 rings, 1800 frames ( 60 s)
-#   'high'   →  9 rings, 3600 frames (120 s)
+#   'low'    →  5 rings, 3600 frames (120 s)
+#   'medium' →  7 rings, 3600 frames (120 s)
+#   'high'   →  9 rings, 3600 frames (120 s) + DoF + pulses
 #   'ultra'  →  9 rings, 3600 frames (120 s) + particles
 QUALITY = 'low'
 

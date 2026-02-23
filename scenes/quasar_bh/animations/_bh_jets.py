@@ -27,7 +27,11 @@ def _jet_materials() -> List[Dict]:
 
 
 def _jet_geometry() -> List[Dict]:
-    """Cylinders with MHD collimation radius + Lorentz-contracted length."""
+    """Cylinders with MHD collimation radius + Lorentz-contracted length.
+
+    Each cylinder has depth=length and is displaced ±length/2 along Z
+    so its near cap sits at the BH origin and far cap at ±length.
+    """
     length = jp.observed_length()
     r_mid = jp.collimation_radius(length * 0.5)
     specs = [
@@ -45,7 +49,8 @@ def _jet_geometry() -> List[Dict]:
                 'object': name, 'material': mat,
             }},
             {'cmd': 'scale_object', 'args': {
-                'name': name, 'scale': (r_mid, r_mid, 1.0),
+                'name': name,
+                'scale': (r_mid, r_mid, 1.0),
             }},
             {'cmd': 'move_object', 'args': {
                 'name': name, 'location': (0, 0, z_pos),

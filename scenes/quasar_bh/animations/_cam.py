@@ -35,12 +35,12 @@ def build_camera(
     # not along the jet axis.
     for f in range(1, total_frames + 1, cam_step):
         t = (f - 1) / max(total_frames - 1, 1)
-        az = t * 2 * math.pi  # full 360° sweep
-        # elevation around 45° ± 10° to avoid polar axis and keep jets in view
-        el = math.radians(45 + 10 * math.sin(t * 2 * math.pi))
+        az = t * 2 * math.pi          # full 360° azimuth sweep
+        # Elevation uses a different frequency (3/2 of azimuth) so the
+        # camera traces a 3-D Lissajous path — X, Y and Z all vary
+        # continuously and the orbit never collapses to a flat circle.
+        el = math.radians(35 + 25 * math.sin(t * 3 * math.pi))
 
-        # Dolly-in close pass near t=0.5 using a Gaussian falloff; reduce
-        # strength so we don't go directly into jet cone.
         dodge = math.exp(-((t - 0.5) / 0.08) ** 2)
         r_local = r * (1.0 - 0.15 * dodge)
 
