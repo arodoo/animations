@@ -19,6 +19,7 @@ class ObjectsCollection:
         unique_name = self._make_unique_name(name)
         obj = MockObject(unique_name)
         obj.data = data
+        obj._collections.append(self)
         self._objects[unique_name] = obj
         return obj
 
@@ -33,11 +34,19 @@ class ObjectsCollection:
 
     def link(self, obj: MockObject) -> None:
         """Link existing object to collection."""
+        if self not in obj._collections:
+            obj._collections.append(self)
         self._objects[obj.name] = obj
 
     def unlink(self, obj: MockObject) -> None:
         """Unlink object from collection (alias for remove)."""
         self.remove(obj)
+
+    def _rekey(self, old_name: str, new_name: str) -> None:
+        """Update dict key when an object is renamed."""
+        if old_name in self._objects:
+            obj = self._objects.pop(old_name)
+            self._objects[new_name] = obj
 
     def _make_unique_name(self, name: str) -> str:
         """Ensure unique name by appending .001, .002, etc."""

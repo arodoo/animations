@@ -27,11 +27,13 @@ def _jet_materials() -> List[Dict]:
 
 
 def _jet_geometry() -> List[Dict]:
-    """Cylinders with MHD collimation radius + Lorentz-contracted length.
+    """Two cylinders along ±Z, mirrored about the BH origin.
 
-    Parent first so all subsequent transforms are in local (BH) space.
-    North: z_pos = +length/2 → spans [0, +length] from BH.
-    South: z_pos = -length/2 → spans [-length, 0] from BH.
+    All transforms (scale, location) applied while the object is still
+    unparented — world space == local space for an origin-parented object.
+    Parent is set last so Blender does not reinterpret existing transforms.
+    North: center at +length/2  → extends from  0  to +length.
+    South: center at -length/2  → extends from -length to  0.
     """
     length = jp.observed_length()
     r_mid = jp.collimation_radius(length * 0.5)
@@ -46,12 +48,6 @@ def _jet_geometry() -> List[Dict]:
                 'type': 'cylinder', 'name': name,
                 'vertices': 32, 'depth': length,
             }},
-            # Parent before applying transforms so location/scale are
-            # relative to BlackHole origin — avoids matrix_parent_inverse
-            # ambiguity in real Blender.
-            {'cmd': 'parent_object', 'args': {
-                'child': name, 'parent': 'BlackHole',
-            }},
             {'cmd': 'assign_material', 'args': {
                 'object': name, 'material': mat,
             }},
@@ -60,6 +56,11 @@ def _jet_geometry() -> List[Dict]:
             }},
             {'cmd': 'move_object', 'args': {
                 'name': name, 'location': (0, 0, z_pos),
+            }},
+            # Parent last: BlackHole is at world origin with no rotation,
+            # so obj.location already equals its desired local offset.
+            {'cmd': 'parent_object', 'args': {
+                'child': name, 'parent': 'BlackHole',
             }},
         ]
     return cmds

@@ -16,7 +16,8 @@ class MockObject:
     """Mock Blender Object with transforms and animation support."""
 
     def __init__(self, name: str, obj_type: str = "MESH"):
-        self.name: str = name
+        self._name: str = name
+        self._collections: list = []  # all collections holding this object
         self.type: str = obj_type
         self._location = Vector3((0.0, 0.0, 0.0))
         self._rotation_euler = Vector3((0.0, 0.0, 0.0))
@@ -38,6 +39,18 @@ class MockObject:
         self.material_slots: list = []
         self.color = (1.0, 1.0, 1.0, 1.0)
         self.show_name: bool = False
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, value: str) -> None:
+        old = self._name
+        self._name = value
+        if old != value:
+            for col in self._collections:
+                col._rekey(old, value)
 
     @property
     def location(self) -> Vector3:
