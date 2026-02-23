@@ -9,9 +9,15 @@ from . import _jet_physics as jp
 
 
 def _jet_materials() -> List[Dict]:
-    """Beaming-corrected materials: blue north (D³≫1), red south (D³≪1)."""
+    """Jet materials: both jets glow visibly as ejected plasma.
+
+    North (approaching): blue, boosted by relativistic Doppler D³.
+    South (receding):    red-orange, fixed to BASE_EMISSION so it
+    remains visually bright — the physical D³≈0 suppression would
+    make it black, which contradicts the visual intent of ejection.
+    """
     north_emit = round(jp.JET_BASE_EMISSION * jp.doppler_factor(True), 2)
-    south_emit = round(jp.JET_BASE_EMISSION * jp.doppler_factor(False), 2)
+    south_emit = round(jp.JET_BASE_EMISSION, 2)  # un-beamed, always bright
     return [
         {'cmd': 'create_material', 'args': {
             'name': 'JetNorthMat',

@@ -41,8 +41,12 @@ def build_camera(
         # continuously and the orbit never collapses to a flat circle.
         el = math.radians(35 + 25 * math.sin(t * 3 * math.pi))
 
+        # Slow radial breathing: 2.5 full in-out cycles over the animation,
+        # ±25% of base radius — independent of the elevation frequency so
+        # the camera never repeats the same distance/angle combination.
+        breathe = 0.25 * math.sin(t * 2.5 * 2 * math.pi)
         dodge = math.exp(-((t - 0.5) / 0.08) ** 2)
-        r_local = r * (1.0 - 0.15 * dodge)
+        r_local = r * (1.0 - breathe - 0.15 * dodge)
 
         x = r_local * math.cos(el) * math.cos(az)
         y = r_local * math.cos(el) * math.sin(az)

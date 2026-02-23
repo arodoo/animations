@@ -25,16 +25,27 @@ def _precession_keys(total_frames: int) -> List[Dict]:
 
 
 def _knot_keys(total_frames: int) -> List[Dict]:
-    """Plasma knot travel: z-position + scale keyframes per knot."""
+    """Plasma knot travel: BH pole → jet tip in world space, both jets.
+
+    Cylinder local Z: −half = near cap (BH pole), +half = far cap (tip).
+    North knots: local −half→+half  → world   0 → +length (outward ✓)
+    South knots: local +half→−half  → world   0 → −length (outward ✓)
+    """
     length = jp.observed_length()
+    half = length * 0.5
+    # sign_start/sign_end define local-space travel direction per side
+    sides = [
+        ('North', -half, +half),   # local: pole→tip = outward +Z in world
+        ('South', +half, -half),   # local: pole→tip = outward −Z in world
+    ]
     cmds: List[Dict] = []
     for k in range(jp.JET_KNOT_COUNT):
         phase = k / jp.JET_KNOT_COUNT
-        for side, sign in (('North', 1), ('South', -1)):
+        for side, z_start, z_end in sides:
             kname = f'Knot{side}_{k}'
             for f in range(1, total_frames + 1, _KNOT_STEP):
                 t = ((f - 1) / max(total_frames - 1, 1) + phase) % 1.0
-                z = sign * t * length * 0.9
+                z = z_start + t * (z_end - z_start)
                 s = 0.04 + 0.03 * (1.0 - t)
                 cmds += [
                     {'cmd': 'move_object', 'args': {
