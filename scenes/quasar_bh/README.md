@@ -84,10 +84,12 @@ at 1.6× base strength, simulating hotspot activity on the inner disk.
 
 ## Quality presets (`materials/_presets.py`)
 
+All presets target **2 minutes @ 30 fps = 3600 frames**.
+
 | Quality | Rings | Frames | Rotations | Resolution | Particles | DoF |
 |---------|-------|--------|-----------|------------|-----------|-----|
-| low | 5 | 900 | 40 | 1280×720 | ✗ | ✗ |
-| medium | 7 | 1800 | 60 | 1280×720 | ✗ | ✓ |
+| low | 5 | 3600 | 40 | 1280×720 | ✗ | ✗ |
+| medium | 7 | 3600 | 60 | 1280×720 | ✗ | ✓ |
 | high | 9 | 3600 | 90 | 1920×1080 | ✗ | ✓ |
 | ultra | 9 | 3600 | 120 | 1920×1080 | ✓ | ✓ |
 
@@ -109,8 +111,9 @@ full special-relativistic corrections:
 |-----------|-------|--------|
 | Lorentz factor Γ | 7 | typical AGN quasar (Γ = 5–15) |
 | β = v/c | `sqrt(1 - 1/Γ²) ≈ 0.990` | by definition |
-| Rest-frame length | 55 scene units | tunable via `JET_REST_LENGTH` |
-| Observed length | `55/Γ ≈ 7.86` | Lorentz contraction |
+| Rest-frame length | 300 scene units | tunable via `JET_REST_LENGTH` |
+| Observed length | `300/Γ ≈ 42.9` | Lorentz contraction |
+| Base funnel radius | 2.5 scene units | `JET_BASE_RADIUS` |
 
 ### Relativistic beaming
 
@@ -126,13 +129,14 @@ With Γ=7 and β≈0.990: $D_\text{north} \approx 14.1$, $D_\text{south} \approx
 
 ### Collimation profile
 
-Jet radius follows an MHD parabolic-then-cylindrical model from
-[Blandford & Payne 1982]:
+Three-zone MHD profile matching radio-lobe observations:
 
-$$r(z) = \begin{cases} r_b \cdot \sqrt{z / 5r_s} & z < 5r_s \quad \text{(parabolic funnel)} \\ r_b \cdot (1 + 0.015(z - 5r_s)) & z \ge 5r_s \quad \text{(slow cylindrical flare)} \end{cases}$$
+$$r(z) = \begin{cases} r_b \cdot \sqrt{z / 2r_s} & z < 2r_s \quad \text{(steep parabolic funnel)} \\ r_b \cdot (z / 2r_s)^{0.3} & 2r_s \le z < 10r_s \quad \text{(recollimation)} \\ r_{10} \cdot (z / 10r_s)^{0.05} & z \ge 10r_s \quad \text{(near-cylindrical far field)} \end{cases}$$
 
-The jet spawns as a `cylinder` with `depth = observed_length` and
-`scale_x = scale_y = collimation_radius(length/2)`.
+The steep parabolic opening near the BH gives the characteristic
+**wide magnetic funnel** visible in VLBI images (e.g. M87). The
+recollimation zone narrows the jet before it transitions to the
+nearly-cylindrical far-field propagation.
 
 ### Jet precession
 
@@ -170,11 +174,12 @@ one knot is always mid-travel. Each knot:
 
 ## Camera (`animations/_cam.py`)
 
-Spherical orbit at radius 60, focal length 85 mm (telephoto).
+Spherical orbit at radius **150** (was 60), focal length 85 mm (telephoto).
 
 - Azimuth: full 360° sweep over the timeline.
 - Elevation: 45° ± 10° (never on the polar/jet axis).
-- Dolly-in: Gaussian close pass at t=0.5, reduces radius by 35% at peak.
+- Dolly-in: Gaussian close pass at t=0.5, reduces radius by 15% at peak
+  (reduced from 35% — jets are large and must stay in frame).
 - DoF: focus at 3.0 (inner disk), f/1.8.
 
 ---

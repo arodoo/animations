@@ -5,7 +5,7 @@
 import math
 from typing import Any, Dict, List
 
-_CAM_RADIUS = 60      # larger orbital radius so camera can view the singularity from above
+_CAM_RADIUS = 150     # wide orbital radius — jets must fit in frame
 _FOCAL_LENGTH = 85.0  # mm — telephoto for compression and emphasis on center
 
 
@@ -42,7 +42,7 @@ def build_camera(
         # Dolly-in close pass near t=0.5 using a Gaussian falloff; reduce
         # strength so we don't go directly into jet cone.
         dodge = math.exp(-((t - 0.5) / 0.08) ** 2)
-        r_local = r * (1.0 - 0.35 * dodge)
+        r_local = r * (1.0 - 0.15 * dodge)
 
         x = r_local * math.cos(el) * math.cos(az)
         y = r_local * math.cos(el) * math.sin(az)

@@ -4,9 +4,10 @@
 
 from typing import Any, Dict
 
+# All presets target 2 min @ 30 fps = 3600 frames.
 PRESETS: Dict[str, Dict[str, Any]] = {
     'low': {
-        'total_frames':    900,
+        'total_frames':    3600,
         'disk_ring_count': 5,
         'disk_rotations':  40,
         'cam_step':        30,
@@ -19,7 +20,7 @@ PRESETS: Dict[str, Dict[str, Any]] = {
         'dof':             False,
     },
     'medium': {
-        'total_frames':    1800,
+        'total_frames':    3600,
         'disk_ring_count': 7,
         'disk_rotations':  60,
         'cam_step':        20,
