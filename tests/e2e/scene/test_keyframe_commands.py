@@ -73,8 +73,8 @@ class TestSetKeyframe:
 
     def test_multiple_keyframes_on_same_property(self):
         """Multiple keyframes on same property stored correctly."""
-        create_cube('Cube')
         dispatch_batch([
+            {'cmd': 'spawn_primitive', 'args': {'type': 'cube', 'name': 'Cube'}},
             {'cmd': 'set_keyframe', 'args': {
                 'name': 'Cube', 'property': 'location', 'frame': 1
             }},

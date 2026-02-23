@@ -1,26 +1,39 @@
 # File moved: scenes/quasar_bh/_disk_animate.py -> animations/_disk_animate.py
-# Accretion disk animation: Keplerian rotation, emission pulses, particles.
+# Accretion disk animation: relativistic rotation, emission pulses.
+# Angular velocities follow the Paczyński–Wiita pseudo-Newtonian model so
+# inner rings spin dramatically faster than outer ones, matching the
+# super-Keplerian runaway near the ISCO.
 # All Rights Reserved Arodi Emmanuel
 
 import math
-from typing import Any, Dict, List
+from typing import Dict, List
 
-from ._physics import keplerian_speed
+from ._physics import pw_angular_velocity, DISK_RINGS
 from ._disk_build import ring_emit_strength
 
-_PULSE_CYCLES = 4  # emission hotspot oscillations per animation
+_PULSE_CYCLES = 4
+
+
+def _frame_dt(total_frames: int, rotations: int) -> float:
+    """Scene time units per frame.
+
+    Calibrated so the innermost ring (DISK_RINGS[0]) completes exactly
+    `rotations` full orbits over `total_frames`.
+    """
+    omega_inner = pw_angular_velocity(DISK_RINGS[0]['radius'])
+    total_angle = 2.0 * math.pi * rotations
+    return total_angle / (omega_inner * total_frames)
+
 
 def _rotation_keys(
     i: int, ring: Dict, total_frames: int,
     rotations: int, step: int,
 ) -> List[Dict]:
-    speed = keplerian_speed(ring['radius'])
+    omega = pw_angular_velocity(ring['radius'])
+    dt = _frame_dt(total_frames, rotations)
     keys = []
     for f in range(1, total_frames + 1, step):
-        angle = (
-            (f / total_frames)
-            * 2 * math.pi * rotations * speed
-        )
+        angle = omega * f * dt
         keys.append({'cmd': 'rotate_object', 'args': {
             'name':     f"Ring_{i}",
             'rotation': (0, 0, angle),
@@ -28,9 +41,12 @@ def _rotation_keys(
         }})
     return keys
 
-def build_disk_animation(disk_rings: List[Dict], total_frames: int,
-                         rotations: int, step: int, pulse_inner: bool,
-                         particles: bool) -> List[Dict]:
+
+def build_disk_animation(
+    disk_rings: List[Dict], total_frames: int,
+    rotations: int, step: int,
+    pulse_inner: bool, particles: bool,
+) -> List[Dict]:
     cmds: List[Dict] = []
     for i, ring in enumerate(disk_rings):
         cmds += _rotation_keys(i, ring, total_frames, rotations, step)

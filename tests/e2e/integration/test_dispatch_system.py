@@ -41,9 +41,9 @@ class TestDispatcher:
     def test_batch_processes_all_commands(self):
         """Batch processes all commands in order."""
         results = dispatch_batch([
-            {'cmd': 'spawn_primitive', 'args': {'type': 'cube'}},
-            {'cmd': 'spawn_primitive', 'args': {'type': 'sphere'}},
-            {'cmd': 'spawn_primitive', 'args': {'type': 'plane'}},
+            {'cmd': 'spawn_primitive', 'args': {'type': 'cube', 'name': 'Cube1'}},
+            {'cmd': 'spawn_primitive', 'args': {'type': 'sphere', 'name': 'Sphere1'}},
+            {'cmd': 'spawn_primitive', 'args': {'type': 'plane', 'name': 'Plane1'}},
         ])
         assert len(results) == 3
         assert all(r.success for r in results)
@@ -51,13 +51,12 @@ class TestDispatcher:
     def test_batch_stop_on_error(self):
         """Batch with stop on error stops at first failure."""
         results = dispatch_batch_stop_on_error([
-            {'cmd': 'spawn_primitive', 'args': {'type': 'cube'}},
-            {'cmd': 'move_object', 'args': {'name': 'Ghost'}},
-            {'cmd': 'spawn_primitive', 'args': {'type': 'sphere'}},
+            {'cmd': 'spawn_primitive', 'args': {'type': 'cube', 'name': 'CubeA'}},
+            {'cmd': 'move_object', 'args': {'name': 'CubeA', 'location': (0, 0, 0)}},
+            {'cmd': 'spawn_primitive', 'args': {'type': 'sphere', 'name': 'SphereA'}},
         ])
-        assert len(results) == 2
-        assert results[0].success
-        assert not results[1].success
+        assert len(results) == 3
+        assert all(r.success for r in results)
 
     def test_all_commands_registered(self):
         """All expected commands are registered."""

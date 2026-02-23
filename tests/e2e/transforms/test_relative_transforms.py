@@ -34,8 +34,8 @@ class TestTranslateRelative:
         assert (loc.x, loc.y, loc.z) == (1, 2, 3)
 
     def test_translate_accumulates(self):
-        spawn('Cube')
         dispatch_batch([
+            {'cmd': 'spawn_primitive', 'args': {'type': 'cube', 'name': 'Cube'}},
             {'cmd': 'translate_relative', 'args': {'name': 'Cube', 'delta': (1, 0, 0)}},
             {'cmd': 'translate_relative', 'args': {'name': 'Cube', 'delta': (1, 0, 0)}},
         ])
@@ -72,8 +72,8 @@ class TestScaleRelative:
 
 class TestTransformUtils:
     def test_reset_transform(self):
-        spawn('Cube')
         dispatch_batch([
+            {'cmd': 'spawn_primitive', 'args': {'type': 'cube', 'name': 'Cube'}},
             {'cmd': 'move_object', 'args': {'name': 'Cube', 'location': (5, 5, 5)}},
             {'cmd': 'reset_transform', 'args': {'name': 'Cube'}},
         ])
@@ -81,8 +81,8 @@ class TestTransformUtils:
         assert loc == (0, 0, 0)
 
     def test_apply_transform(self):
-        spawn('Cube')
         dispatch_batch([
+            {'cmd': 'spawn_primitive', 'args': {'type': 'cube', 'name': 'Cube'}},
             {'cmd': 'move_object', 'args': {'name': 'Cube', 'location': (5, 5, 5)}},
             {'cmd': 'apply_transform', 'args': {'name': 'Cube'}},
         ])

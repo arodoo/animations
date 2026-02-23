@@ -8,7 +8,7 @@ PRESETS: Dict[str, Dict[str, Any]] = {
     'low': {
         'total_frames':    900,
         'disk_ring_count': 5,
-        'disk_rotations':  8,
+        'disk_rotations':  40,
         'cam_step':        30,
         'disk_step':       30,
         'eevee_samples':   8,
@@ -21,7 +21,7 @@ PRESETS: Dict[str, Dict[str, Any]] = {
     'medium': {
         'total_frames':    1800,
         'disk_ring_count': 7,
-        'disk_rotations':  12,
+        'disk_rotations':  60,
         'cam_step':        20,
         'disk_step':       20,
         'eevee_samples':   16,
@@ -34,7 +34,7 @@ PRESETS: Dict[str, Dict[str, Any]] = {
     'high': {
         'total_frames':    3600,
         'disk_ring_count': 9,
-        'disk_rotations':  18,
+        'disk_rotations':  90,
         'cam_step':        10,
         'disk_step':       10,
         'eevee_samples':   32,
@@ -47,7 +47,7 @@ PRESETS: Dict[str, Dict[str, Any]] = {
     'ultra': {
         'total_frames':    3600,
         'disk_ring_count': 9,
-        'disk_rotations':  24,
+        'disk_rotations':  120,
         'cam_step':        5,
         'disk_step':       5,
         'eevee_samples':   64,

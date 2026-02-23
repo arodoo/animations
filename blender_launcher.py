@@ -19,7 +19,25 @@ from scenes.quasar_bh.scene import create_scene as run_scene
 #   'low'    →  5 rings,  900 frames ( 30 s)
 #   'medium' →  7 rings, 1800 frames ( 60 s)
 #   'high'   →  9 rings, 3600 frames (120 s)
+#   'ultra'  →  9 rings, 3600 frames (120 s) + particles
 QUALITY = 'low'
+
+
+def _setup_viewport() -> None:
+    """Switch every 3-D viewport to Material Preview + start playback."""
+    try:
+        import bpy
+        for window in bpy.context.window_manager.windows:
+            for area in window.screen.areas:
+                if area.type != 'VIEW_3D':
+                    continue
+                for space in area.spaces:
+                    if space.type == 'VIEW_3D':
+                        space.shading.type = 'MATERIAL'
+        bpy.ops.screen.animation_play()
+    except Exception:
+        pass
+
 
 if __name__ == '__main__':
     print("=" * 60)
@@ -39,6 +57,8 @@ if __name__ == '__main__':
         for r in failed:
             print(f"    [FAIL] {r.command_name}: {r.error}")
 
+    _setup_viewport()
+
     print("\n" + "=" * 60)
-    print("  Done — Z → Material Preview, then SPACE to play")
+    print("  Done — viewport set to Material Preview, playing")
     print("=" * 60)

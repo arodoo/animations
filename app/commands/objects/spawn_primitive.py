@@ -41,39 +41,75 @@ def spawn_primitive(args: Dict[str, Any]) -> DispatchResult:
     for k in ('type', 'name', 'location'):
         op_kwargs.pop(k, None)
 
+    # Record object names before creating so we can identify created objects
+    def _object_names():
+        try:
+            return set(data.objects.keys())
+        except Exception:
+            try:
+                return {o.name for o in data.objects}
+            except Exception:
+                return set()
+
+    prev_names = _object_names()
+
     try:
         PRIMITIVE_MAP[primitive_type](location=location, **op_kwargs)
     except TypeError:
         # Fallback: some mock/bridge implementations may not accept extra
         # kwargs — call without extras in that case.
-        PRIMITIVE_MAP[primitive_type](location=location)
+        try:
+            PRIMITIVE_MAP[primitive_type](location=location)
+        except Exception as e:
+            return DispatchResult.fail(str(e), command='spawn_primitive')
+    except Exception as e:
+        # Any other error from the operator should be reported so callers
+        # don't accidentally rename or operate on stale active objects.
+        return DispatchResult.fail(str(e), command='spawn_primitive')
 
-    # Use the active object (set by the op) to rename — works in both Blender and mock
-    if name:
-        obj = context.active_object
-        if obj:
-            obj.name = name
-            if obj.data:
-                obj.data.name = name
+    # Determine the created object robustly by name-difference; fallback to context.active_object
+    created_obj = None
+    try:
+        new_names = _object_names()
+        created_names = new_names - prev_names
+        if created_names:
+            # pick one created object (most operators create single object)
+            created_name = next(iter(created_names))
+            try:
+                created_obj = data.objects.get(created_name) if hasattr(data.objects, 'get') else data.objects[created_name]
+            except Exception:
+                created_obj = None
+    except Exception:
+        created_obj = None
 
-            # Optional: apply smooth shading if requested
-            shade_smooth = args.get('shade_smooth', False)
-            if shade_smooth and getattr(obj, 'data', None):
-                try:
-                    for poly in obj.data.polygons:
-                        poly.use_smooth = True
-                except Exception:
-                    # Ignore in mocks or if geometry API is absent
-                    pass
+    if created_obj is None:
+        created_obj = getattr(context, 'active_object', None)
 
-            # Optional: add a subdivision surface modifier if requested
-            subsurf_levels = args.get('subsurf_levels')
-            if subsurf_levels and getattr(obj, 'modifiers', None) is not None:
-                try:
-                    obj.modifiers.new('Subsurf', type='SUBSURF')
-                    obj.modifiers['Subsurf'].levels = int(subsurf_levels)
-                except Exception:
-                    pass
+    if name and created_obj:
+        try:
+            created_obj.name = name
+            if getattr(created_obj, 'data', None):
+                created_obj.data.name = name
+        except Exception:
+            pass
+
+        # Optional: apply smooth shading if requested
+        shade_smooth = args.get('shade_smooth', False)
+        if shade_smooth and getattr(created_obj, 'data', None):
+            try:
+                for poly in created_obj.data.polygons:
+                    poly.use_smooth = True
+            except Exception:
+                pass
+
+        # Optional: add a subdivision surface modifier if requested
+        subsurf_levels = args.get('subsurf_levels')
+        if subsurf_levels and getattr(created_obj, 'modifiers', None) is not None:
+            try:
+                created_obj.modifiers.new('Subsurf', type='SUBSURF')
+                created_obj.modifiers['Subsurf'].levels = int(subsurf_levels)
+            except Exception:
+                pass
 
     return DispatchResult.ok(
         data={'type': primitive_type, 'location': location},

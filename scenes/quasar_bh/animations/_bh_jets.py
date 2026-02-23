@@ -1,80 +1,70 @@
-# File moved: scenes/quasar_bh/_bh_jets.py -> animations/_bh_jets.py
-# Black hole sphere and polar relativistic jet commands.
+# File: scenes/quasar_bh/animations/_bh_jets.py
+# Relativistic polar jet geometry, materials and animation.
+# Black hole sphere lives in _black_hole.py.
 # All Rights Reserved Arodi Emmanuel
 
-from typing import Any, Dict, List
-from app.kernel.registry import register_command
-from . import _physics
+from typing import Dict, List
+
+from . import _jet_physics as jp
 
 
-_JET_SPECS = [('JetNorth', 28), ('JetSouth', -28)]
-
-
-def build_black_hole() -> List[Dict]:
-    """Central black hole — pure black, non-emissive sphere.
-
-    Spawn a higher-resolution, smooth sphere sized to the Schwarzschild
-    radius so it aligns visually with the relativistic disk geometry.
-    """
-    # Use the scene-normalised Schwarzschild radius for visual scale.
-    r_s = float(_physics.SCHWARZSCHILD_RADIUS)
-    scale_val = max(0.05, r_s)  # guard against zero/too-small values
-
+def _jet_materials() -> List[Dict]:
+    """Beaming-corrected materials: blue north (D³≫1), red south (D³≪1)."""
+    north_emit = round(jp.JET_BASE_EMISSION * jp.doppler_factor(True), 2)
+    south_emit = round(jp.JET_BASE_EMISSION * jp.doppler_factor(False), 2)
     return [
         {'cmd': 'create_material', 'args': {
-            'name': 'BlackHoleMat', 'color': (0, 0, 0, 1),
+            'name': 'JetNorthMat',
+            'color': (0.55, 0.85, 1.0, 1.0),
+            'emit': True, 'emit_strength': north_emit,
         }},
-        {'cmd': 'spawn_primitive', 'args': {
-            'type': 'sphere',
-            'name': 'BlackHole',
-            # Request higher tessellation and smooth shading for a clean rim
-            'segments': 64,
-            'ring_count': 32,
-            'shade_smooth': True,
-            'subsurf_levels': 2,
-        }},
-        {'cmd': 'assign_material', 'args': {
-            'object': 'BlackHole', 'material': 'BlackHoleMat',
-        }},
-        {'cmd': 'scale_object', 'args': {
-            'name': 'BlackHole', 'scale': (scale_val, scale_val, scale_val),
-        }},
-    ]
-
-
-def build_jets(use_particles: bool) -> List[Dict]:
-    """Polar jets — electric-blue cones with optional particle stream."""
-    cmds: List[Dict] = [
         {'cmd': 'create_material', 'args': {
-            'name':          'JetMat',
-            'color':         (0.7, 0.9, 1.0, 1.0),
-            'emit':          True,
-            'emit_strength': 12.0,
+            'name': 'JetSouthMat',
+            'color': (1.0, 0.45, 0.20, 1.0),
+            'emit': True, 'emit_strength': south_emit,
         }},
     ]
-    for jet_name, z_pos in _JET_SPECS:
+
+
+def _jet_geometry() -> List[Dict]:
+    """Cylinders with MHD collimation radius + Lorentz-contracted length."""
+    length = jp.observed_length()
+    r_mid = jp.collimation_radius(length * 0.5)
+    specs = [
+        ('JetNorth', length * 0.5, 'JetNorthMat'),
+        ('JetSouth', -length * 0.5, 'JetSouthMat'),
+    ]
+    cmds: List[Dict] = []
+    for name, z_pos, mat in specs:
         cmds += [
             {'cmd': 'spawn_primitive', 'args': {
-                'type': 'cone', 'name': jet_name}},
+                'type': 'cylinder', 'name': name,
+                'vertices': 32, 'depth': length,
+            }},
             {'cmd': 'assign_material', 'args': {
-                'object': jet_name, 'material': 'JetMat'}},
+                'object': name, 'material': mat,
+            }},
             {'cmd': 'scale_object', 'args': {
-                'name': jet_name, 'scale': (0.18, 0.18, 55)}},
+                'name': name, 'scale': (r_mid, r_mid, 1.0),
+            }},
             {'cmd': 'move_object', 'args': {
-                'name': jet_name, 'location': (0, 0, z_pos)}},
+                'name': name, 'location': (0, 0, z_pos),
+            }},
             {'cmd': 'parent_object', 'args': {
-                'child': jet_name, 'parent': 'BlackHole'}},
+                'child': name, 'parent': 'BlackHole',
+            }},
         ]
-        if use_particles:
-            cmds.append({'cmd': 'add_particle_system', 'args': {
-                'object':        jet_name,
-                'name':          f'{jet_name}Particles',
-                'count':         800,
-                'lifetime':      90,
-                'emit_from':     'FACE',
-                'normal_factor': 2.0,
-                'gravity':       0.0,
-                'size':          0.08,
-                'render_type':   'HALO',
-            }})
+    return cmds
+
+
+def build_jets(
+    _use_particles: bool = False,
+    total_frames: int = 900,
+) -> List[Dict]:
+    """All jet commands: geometry, knot spawn + animation keyframes."""
+    from ._jet_animate import build_jet_animation
+    cmds: List[Dict] = []
+    cmds += _jet_materials()
+    cmds += _jet_geometry()
+    cmds += build_jet_animation(total_frames)
     return cmds

@@ -10,7 +10,8 @@ import app.commands  # triggers all command registrations
 from .materials._presets import PRESETS
 from .animations._physics import DISK_RINGS
 from .animations._env import build_environment
-from .animations._bh_jets import build_black_hole, build_jets
+from .animations._black_hole import build_black_hole
+from .animations._bh_jets import build_jets
 from .animations._disk_build import build_ring
 from .animations._disk_animate import build_disk_animation
 from .animations._cam import build_camera
@@ -48,7 +49,7 @@ def create_scene(quality: str = 'low') -> Dict[str, Any]:
         p['pulse_inner'],
         p['particles'],
     )
-    batch += build_jets(p['particles'])
+    batch += build_jets(p['particles'], p['total_frames'])
     batch += build_camera(
         p['total_frames'], p['cam_step'], p['dof'],
     )

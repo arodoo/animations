@@ -40,6 +40,23 @@ for _mod in [k for k in sys.modules if k.startswith(('scenes', 'app'))]:
 # ── 4. Run ────────────────────────────────────────────────────────────────
 from scenes.quasar_bh.scene import create_scene
 
+
+def _setup_viewport() -> None:
+    """Switch every 3-D viewport to Material Preview + start playback."""
+    try:
+        import bpy
+        for window in bpy.context.window_manager.windows:
+            for area in window.screen.areas:
+                if area.type != 'VIEW_3D':
+                    continue
+                for space in area.spaces:
+                    if space.type == 'VIEW_3D':
+                        space.shading.type = 'MATERIAL'
+        bpy.ops.screen.animation_play()
+    except Exception:
+        pass
+
+
 if __name__ == '__main__':
     print("=" * 60)
     print(f"  QUASAR BLACK HOLE  [quality = {QUALITY}]")
@@ -59,6 +76,8 @@ if __name__ == '__main__':
         for r in failed:
             print(f"    [FAIL] {r.command_name}: {r.error}")
 
+    _setup_viewport()
+
     print("\n" + "=" * 60)
-    print("  Done — Z → Rendered mode, then SPACE to play")
+    print("  Done — viewport set to Material Preview, playing")
     print("=" * 60)

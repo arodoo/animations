@@ -4,5 +4,6 @@ Holds modular animation builders (disk, jets, camera, env, physics).
 """
 
 __all__ = [
-    '_bh_jets', '_cam', '_disk_animate', '_disk_build', '_env', '_physics'
+    '_black_hole', '_bh_jets', '_cam', '_disk_animate', '_disk_build',
+    '_env', '_jet_animate', '_jet_physics', '_physics',
 ]
