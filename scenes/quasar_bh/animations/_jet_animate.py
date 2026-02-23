@@ -52,7 +52,7 @@ def _knot_keys(total_frames: int) -> List[Dict]:
 
 
 def _knot_spawn() -> List[Dict]:
-    """Spawn knot spheres and parent each to its jet column."""
+    """Spawn knot spheres, parent to jet column first, then keyframe."""
     cmds: List[Dict] = []
     for k in range(jp.JET_KNOT_COUNT):
         for side in ('North', 'South'):
@@ -61,11 +61,11 @@ def _knot_spawn() -> List[Dict]:
                 {'cmd': 'spawn_primitive', 'args': {
                     'type': 'sphere', 'name': kname,
                 }},
-                {'cmd': 'assign_material', 'args': {
-                    'object': kname, 'material': f'Jet{side}Mat',
-                }},
                 {'cmd': 'parent_object', 'args': {
                     'child': kname, 'parent': f'Jet{side}',
+                }},
+                {'cmd': 'assign_material', 'args': {
+                    'object': kname, 'material': f'Jet{side}Mat',
                 }},
             ]
     return cmds

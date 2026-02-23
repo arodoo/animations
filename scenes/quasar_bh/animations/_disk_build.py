@@ -20,16 +20,17 @@ _RING_RADII = [1.20, 1.70, 2.40, 3.40, 4.82, 6.82, 9.66, 13.67, 19.35]
 
 
 def _minor_radius(i: int, r: float) -> float:
-    """Tube radius clamped so the inner torus edge never covers the BH.
+    """Tube radius expanded so adjacent tori overlap, merging into
+    a continuous radiant cloud rather than discrete donuts.
 
-    max_allowed = r - (r_s + clearance) ensures the inner surface of the
-    tube stays outside the event horizon with a small visible gap.
+    Overlap factor >1.0 ensures each tube bleeds into its neighbours.
+    Inner rings are hotter so their tubes are proportionally larger.
     """
     if i + 1 < len(_RING_RADII):
-        half_gap = (_RING_RADII[i + 1] - r) * 0.80
+        half_gap = (_RING_RADII[i + 1] - r) * 1.15
     else:
-        half_gap = (_RING_RADII[-1] - _RING_RADII[-2]) * 0.80
-    heat_factor = max(0.7, 1.25 - i * 0.06)
+        half_gap = (_RING_RADII[-1] - _RING_RADII[-2]) * 1.15
+    heat_factor = max(0.9, 1.45 - i * 0.05)
     raw = half_gap * heat_factor
     max_allowed = r - (SCHWARZSCHILD_RADIUS + _BH_CLEARANCE)
     return round(min(raw, max_allowed), 3)
@@ -47,9 +48,10 @@ def build_ring(i: int, ring: Dict) -> List[Dict]:
     doppler_boost = 1.0 + 0.5 * beta
     emit_strength = round(base_emit * g_factor * doppler_boost, 3)
 
-    rough = max(0.05, 0.35 - 0.03 * i)
-    # strong noise on inner rings makes the surface look turbulent/cloudy
-    normal = max(0.15, 0.55 - 0.04 * i)
+    # Full roughness on all rings: gas cloud, not polished torus
+    rough = 1.0
+    # Maximum normals so surface reads as turbulent plasma, not geometry
+    normal = max(0.8, 1.6 - 0.08 * i)
     minor_r = _minor_radius(i, r)
 
     return [

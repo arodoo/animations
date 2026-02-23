@@ -29,13 +29,14 @@ def _jet_materials() -> List[Dict]:
 def _jet_geometry() -> List[Dict]:
     """Cylinders with MHD collimation radius + Lorentz-contracted length.
 
-    Each cylinder has depth=length and is displaced ±length/2 along Z
-    so its near cap sits at the BH origin and far cap at ±length.
+    Parent first so all subsequent transforms are in local (BH) space.
+    North: z_pos = +length/2 → spans [0, +length] from BH.
+    South: z_pos = -length/2 → spans [-length, 0] from BH.
     """
     length = jp.observed_length()
     r_mid = jp.collimation_radius(length * 0.5)
     specs = [
-        ('JetNorth', length * 0.5, 'JetNorthMat'),
+        ('JetNorth',  length * 0.5, 'JetNorthMat'),
         ('JetSouth', -length * 0.5, 'JetSouthMat'),
     ]
     cmds: List[Dict] = []
@@ -45,18 +46,20 @@ def _jet_geometry() -> List[Dict]:
                 'type': 'cylinder', 'name': name,
                 'vertices': 32, 'depth': length,
             }},
+            # Parent before applying transforms so location/scale are
+            # relative to BlackHole origin — avoids matrix_parent_inverse
+            # ambiguity in real Blender.
+            {'cmd': 'parent_object', 'args': {
+                'child': name, 'parent': 'BlackHole',
+            }},
             {'cmd': 'assign_material', 'args': {
                 'object': name, 'material': mat,
             }},
             {'cmd': 'scale_object', 'args': {
-                'name': name,
-                'scale': (r_mid, r_mid, 1.0),
+                'name': name, 'scale': (r_mid, r_mid, 1.0),
             }},
             {'cmd': 'move_object', 'args': {
                 'name': name, 'location': (0, 0, z_pos),
-            }},
-            {'cmd': 'parent_object', 'args': {
-                'child': name, 'parent': 'BlackHole',
             }},
         ]
     return cmds

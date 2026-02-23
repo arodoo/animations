@@ -11,7 +11,7 @@ def build_environment(p: Dict[str, Any]) -> List[Dict]:
     cmds.append({'cmd': 'set_frame_range', 'args': {
         'start': 1, 'end': p['total_frames'],
     }})
-    cmds.append({'cmd': 'set_world_color', 'args': {'color': (0.0, 0.0, 0.0)}})
+    cmds.append({'cmd': 'set_world_background', 'args': {'color': (0.0, 0.0, 0.0)}})
     cmds.append({'cmd': 'create_light', 'args': {'name': 'KeyLight', 'type': 'AREA'}})
     cmds.append({'cmd': 'create_light', 'args': {'name': 'FillLight', 'type': 'POINT'}})
     return cmds
