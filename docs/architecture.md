@@ -32,6 +32,16 @@ Orchestration and command logic.
 - **`commands/`** — individual command implementations, grouped by concern
 - **`scene/`** — reusable scene helpers (procedural starfields, etc.)
 
+### Component Layer — `app/components/`
+Reusable scene components (builders, animators, physical properties) extracted from monolithic scenes. Sit logically above commands but below the specific scene implementations.
+
+- **`bodies/`** — physical structures (e.g., `compact_object`, `jet_builder`).
+- **`env_builder.py`** — world environment and cartesian grid scaffolding.
+- **`camera_builder.py`** — orbiting and focal-aware cinematic cameras.
+- **`disk_builder.py` / `disk_animator.py`** — accretion disks and rings.
+
+Scenes are instantiated by composing these parent components with scene-specific parameters (sizes, colors, periods) to decouple visual data from engine logic.
+
 ### Infrastructure — `app/infra/`
 Isolates the Blender dependency.
 

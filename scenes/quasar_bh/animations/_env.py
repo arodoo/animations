@@ -1,29 +1,25 @@
-# File moved: scenes/quasar_bh/_env.py -> animations/_env.py
-# Environment, lights and world settings for the scene.
+# File: scenes/quasar_bh/animations/_env.py
+# Quasar environment wrapper — delegates to app.components.env_builder.
 # All Rights Reserved Arodi Emmanuel
 
 from typing import Any, Dict, List
 
+from app.components.env_builder import build_environment as _build
+
 
 def build_environment(p: Dict[str, Any]) -> List[Dict]:
-    cmds: List[Dict] = []
-    cmds.append({'cmd': 'clear_scene', 'args': {}})
-    cmds.append({'cmd': 'set_frame_range', 'args': {
-        'start': 1, 'end': p['total_frames'],
-    }})
-    # Near-black world so the sky/void stays dark but not pure black
-    cmds.append({'cmd': 'set_world_background', 'args': {
-        'color': (0.02, 0.02, 0.025),
-    }})
-    # Cartesian grid floor — placed BELOW all scene geometry.
-    # JetSouth tip ≈ -43 BU; z_offset=-80 keeps the plane out of sight-lines.
-    cmds.append({'cmd': 'create_cartesian_grid', 'args': {
-        'size':       500,
-        'grid_scale': 10,
-        'z_offset':   -80.0,
-        'bg_color':   (0.03, 0.03, 0.04, 1.0),
-        'line_color': (0.12, 0.14, 0.22, 1.0),
-    }})
-    cmds.append({'cmd': 'create_light', 'args': {'name': 'KeyLight', 'type': 'AREA'}})
-    cmds.append({'cmd': 'create_light', 'args': {'name': 'FillLight', 'type': 'POINT'}})
-    return cmds
+    """Build quasar scene environment using the generic env_builder."""
+    return _build({
+        'total_frames':  p['total_frames'],
+        'world_color':   (0.02, 0.02, 0.025),
+        'grid':          True,
+        'grid_size':     500,
+        'grid_scale':    10,
+        'grid_z_offset': -80.0,
+        'grid_bg_color':   (0.03, 0.03, 0.04, 1.0),
+        'grid_line_color': (0.12, 0.14, 0.22, 1.0),
+        'lights': [
+            {'name': 'KeyLight',  'type': 'AREA'},
+            {'name': 'FillLight', 'type': 'POINT'},
+        ],
+    })

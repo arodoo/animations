@@ -129,3 +129,11 @@ result = create_scene(quality='medium')
 
 All disc ring templates are in `_DISK_RINGS` at the top of `scene.py`.
 Adjust radius, colour, or add rings to taste.
+
+---
+
+## Troubleshooting
+
+For technical issues regarding jet visibility, material slots, or scene occlusion, see:
+[Troubleshooting & Resolved Issues](file:///d:/zProyectos/01Python/animations/docs/scenes/quasar_bh_troubleshooting.md)
+
