@@ -19,6 +19,17 @@ PRIMITIVE_MAP = {
     'cylinder': ops.mesh.primitive_cylinder_add,
 }
 
+# The explicit whitelist of Blender API kwargs supported by each primitive type.
+# This prevents TypeErrors when we pass our engine's custom decorators (like 'shade_smooth')
+SUPPORTED_KWARGS = {
+    'cube': {'size', 'calc_uvs', 'enter_editmode', 'align', 'rotation', 'scale'},
+    'sphere': {'segments', 'ring_count', 'radius', 'calc_uvs', 'enter_editmode', 'align', 'rotation', 'scale'},
+    'plane': {'size', 'calc_uvs', 'enter_editmode', 'align', 'rotation', 'scale'},
+    'torus': {'major_segments', 'minor_segments', 'major_segments', 'minor_segments', 'major_radius', 'minor_radius', 'abso_major_rad', 'abso_minor_rad', 'generate_uvs', 'enter_editmode', 'align', 'rotation', 'scale'},
+    'cone': {'vertices', 'radius1', 'radius2', 'depth', 'end_fill_type', 'calc_uvs', 'enter_editmode', 'align', 'rotation', 'scale'},
+    'cylinder': {'vertices', 'radius', 'depth', 'end_fill_type', 'calc_uvs', 'enter_editmode', 'align', 'rotation', 'scale'}
+}
+
 
 @register_command('spawn_primitive')
 def spawn_primitive(args: Dict[str, Any]) -> DispatchResult:
@@ -34,12 +45,10 @@ def spawn_primitive(args: Dict[str, Any]) -> DispatchResult:
         )
 
     # Forward supported kwargs from the args dict to the primitive operator.
-    # We explicitly pop out our control keys and pass the rest through so
-    # callers can request segments/subdivisions/major_radius etc.
-    op_kwargs = dict(args)
-    # Remove keys not accepted by the bpy ops
-    for k in ('type', 'name', 'location'):
-        op_kwargs.pop(k, None)
+    # We explicitly lookup our whitelist to ensure we never send engine decorators
+    # (like 'shade_smooth' or 'name') to the low-level Blender C-API.
+    allowed_keys = SUPPORTED_KWARGS.get(primitive_type, set())
+    op_kwargs = {k: v for k, v in args.items() if k in allowed_keys}
 
     # Record object names before creating so we can identify created objects
     def _object_names():
@@ -55,15 +64,8 @@ def spawn_primitive(args: Dict[str, Any]) -> DispatchResult:
 
     try:
         PRIMITIVE_MAP[primitive_type](location=location, **op_kwargs)
-    except TypeError:
-        # Fallback: some mock/bridge implementations may not accept extra
-        # kwargs — call without extras in that case.
-        try:
-            PRIMITIVE_MAP[primitive_type](location=location)
-        except Exception as e:
-            return DispatchResult.fail(str(e), command='spawn_primitive')
     except Exception as e:
-        # Any other error from the operator should be reported so callers
+        # Any error from the operator should be reported so callers
         # don't accidentally rename or operate on stale active objects.
         return DispatchResult.fail(str(e), command='spawn_primitive')
 

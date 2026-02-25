@@ -5,6 +5,9 @@
 import math
 from typing import Any, Dict, List
 
+from app.components.bodies.celestial_body import build_celestial_body
+from app.components.bodies.dyson_sphere import build_dyson_sphere
+
 
 def _build_materials() -> List[Dict]:
     return [
@@ -16,10 +19,11 @@ def _build_materials() -> List[Dict]:
             'emit_strength': 2.0,  # Slight glow to the brass
         }},
         {'cmd': 'create_metal_material', 'args': {
-            'name': 'CopperMat',
-            'color': (0.7, 0.3, 0.1, 1.0),
-            'roughness': 0.2,
+            'name': 'GoldMat',
+            'color': (1.0, 0.8, 0.1, 1.0),
+            'roughness': 0.05,
             'metallic': 1.0,
+            'emit_strength': 3.0,
         }},
         {'cmd': 'create_metal_material', 'args': {
             'name': 'SteelMat',
@@ -30,43 +34,31 @@ def _build_materials() -> List[Dict]:
     ]
 
 
-def _build_center(total_frames: int, step: int) -> List[Dict]:
-    cmds: List[Dict] = []
-    
-    # Sun Core - Polished glowing Brass
-    cmds.append({'cmd': 'spawn_primitive', 'args': {
-        'type': 'sphere', 'name': 'SunCore',
-        'segments': 64, 'ring_count': 32, 'shade_smooth': True, 'subsurf_levels': 1
-    }})
-    cmds.append({'cmd': 'assign_material', 'args': {
-        'object': 'SunCore', 'material': 'BrassMat'
-    }})
-    cmds.append({'cmd': 'scale_object', 'args': {
-        'name': 'SunCore', 'scale': (0.9, 0.9, 0.9)
-    }})
+def _build_sun_core() -> List[Dict]:
+    # Sun Core - Standardized spherical body
+    return build_celestial_body({
+        'name': 'SunCore',
+        'radius': 0.9,
+        'material': 'BrassMat',
+        'subsurf': 2,
+    })
 
-    # Gyro Rings (aesthetic spinning rings around the sun)
-    for i in range(3):
-        ring_name = f"SunGyro_{i}"
-        cmds.append({'cmd': 'spawn_primitive', 'args': {
-            'type': 'torus', 'name': ring_name,
-            'major_segments': 64, 'minor_segments': 16,
-            'major_radius': 1.2 + i * 0.3, 'minor_radius': 0.03,
-            'shade_smooth': True
-        }})
-        cmds.append({'cmd': 'assign_material', 'args': {
-            'object': ring_name, 'material': 'CopperMat'
-        }})
-        
-        # Animate gyro rings
-        for f in range(1, total_frames + 1, step):
-            angle = (f / max(1, total_frames - 1)) * math.pi * 2.0 * (1 + i) * 2.0
-            rot = [0.0, 0.0, 0.0]
-            rot[i % 3] = angle
-            cmds.append({'cmd': 'rotate_object', 'args': {
-                'name': ring_name, 'rotation': tuple(rot), 'frame': f
-            }})
-            
+
+def _build_center(total_frames: int, step: int) -> List[Dict]:
+    cmds = _build_sun_core()
+    
+    # Parametric Architectural Dyson Cage around the Sun
+    cmds += build_dyson_sphere({
+        'base_radius': 1.15,
+        'ring_thickness': 0.008,
+        'materials': ['GoldMat', 'BrassMat'],
+        'meridians': 4,
+        'parallels': 3,
+        'clearance': 0.02, # 20mm clearance radius expansion per group
+        'total_frames': total_frames,
+        'step': step
+    })
+    
     return cmds
 
 
@@ -103,7 +95,7 @@ def _build_planet_mechanism(
         'shade_smooth': True
     }})
     cmds.append({'cmd': 'assign_material', 'args': {
-        'object': track, 'material': 'SteelMat'
+        'object': track, 'material': 'BrassMat'
     }})
     cmds.append({'cmd': 'move_object', 'args': {
         'name': track, 'location': (0.0, 0.0, z_offset), 'frame': 1
@@ -127,17 +119,13 @@ def _build_planet_mechanism(
         'name': arm, 'scale': (0.02, 0.02, r)
     }})
     
-    # 3. The Planet (Sphere)
-    cmds.append({'cmd': 'spawn_primitive', 'args': {
-        'type': 'sphere', 'name': name,
-        'segments': 32, 'ring_count': 16, 'shade_smooth': True
-    }})
-    cmds.append({'cmd': 'assign_material', 'args': {
-        'object': name, 'material': mat_name
-    }})
-    cmds.append({'cmd': 'scale_object', 'args': {
-        'name': name, 'scale': (size, size, size)
-    }})
+    # 3. The Planet (Standardized Spherical Architecture)
+    cmds += build_celestial_body({
+        'name': name,
+        'radius': size,
+        'material': mat_name,
+        'subsurf': 1,
+    })
     
     # 4. Animation
     for f in range(1, total_frames + 1, step):
