@@ -21,10 +21,12 @@ if PROJECT_PATH not in sys.path:
 #
 #   'low'    → 4 planets, 3600 f  (30 fps = 2min)
 #   'medium' → 6 planets, 3600 f
-#   'high'   → 8 planets, 3600 f  + DoF
-#   'ultra'  → 8 planets, 3600 f  + DoF, dense keyframes
+#   'high'   → 8 planets, 1200 f  + DoF
+#   'ultra'  → 8 planets, 1200 f  + DoF, dense keyframes
 #
 QUALITY = 'ultra'
+TOTAL_FRAMES  = 1200   # Set to None to use Preset defaults
+CAMERA_RADIUS = 100.0  # Set to None to use 100.0 default
 
 # ── 3. Purge stale bytecode + cached modules ───────────────────────────────
 import importlib
@@ -62,7 +64,11 @@ if __name__ == '__main__':
     print(f"  SOLAR SYSTEM  [quality = {QUALITY}]")
     print("=" * 60)
 
-    result = create_scene(quality=QUALITY)
+    result = create_scene(
+        quality=QUALITY,
+        total_frames=TOTAL_FRAMES,
+        camera_radius=CAMERA_RADIUS
+    )
 
     ok_count = sum(1 for r in result['results'] if r.success)
     total    = len(result['results'])
