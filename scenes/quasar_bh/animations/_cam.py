@@ -5,7 +5,7 @@
 import math
 from typing import Any, Dict, List
 
-_CAM_RADIUS = 150     # wide orbital radius — jets must fit in frame
+_CAM_RADIUS = 240     # +60 % zoom-out — jets + grid fully visible in frame
 _FOCAL_LENGTH = 85.0  # mm — telephoto for compression and emphasis on center
 
 

@@ -46,7 +46,8 @@ def _knot_keys(total_frames: int) -> List[Dict]:
             for f in range(1, total_frames + 1, _KNOT_STEP):
                 t = ((f - 1) / max(total_frames - 1, 1) + phase) % 1.0
                 z = z_start + t * (z_end - z_start)
-                s = 0.04 + 0.03 * (1.0 - t)
+                # Scale: 1.5 at ejection (root), shrinks to 0.8 at tip
+                s = 1.5 - 0.7 * t
                 cmds += [
                     {'cmd': 'move_object', 'args': {
                         'name': kname,
@@ -59,6 +60,7 @@ def _knot_keys(total_frames: int) -> List[Dict]:
                         'frame': f,
                     }},
                 ]
+
     return cmds
 
 

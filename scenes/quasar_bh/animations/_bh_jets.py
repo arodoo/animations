@@ -12,12 +12,13 @@ def _jet_materials() -> List[Dict]:
     """Jet materials: both jets glow visibly as ejected plasma.
 
     North (approaching): blue, boosted by relativistic Doppler D³.
-    South (receding):    red-orange, fixed to BASE_EMISSION so it
-    remains visually bright — the physical D³≈0 suppression would
-    make it black, which contradicts the visual intent of ejection.
+    South (receding):    red-orange, matched to north emission so
+    both jets are visually prominent — physical suppression (D³≪1)
+    would render it invisible at animation distances.
     """
     north_emit = round(jp.JET_BASE_EMISSION * jp.doppler_factor(True), 2)
-    south_emit = round(jp.JET_BASE_EMISSION, 2)  # un-beamed, always bright
+    # Mirror north brightness; color (orange-red) marks the recession
+    south_emit = north_emit
     return [
         {'cmd': 'create_material', 'args': {
             'name': 'JetNorthMat',
@@ -26,7 +27,7 @@ def _jet_materials() -> List[Dict]:
         }},
         {'cmd': 'create_material', 'args': {
             'name': 'JetSouthMat',
-            'color': (1.0, 0.45, 0.20, 1.0),
+            'color': (1.0, 0.40, 0.15, 1.0),
             'emit': True, 'emit_strength': south_emit,
         }},
     ]

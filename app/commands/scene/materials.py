@@ -43,10 +43,19 @@ def create_material(args: Dict[str, Any]) -> DispatchResult:
             emit_node.inputs['Color'].default_value = color
             emit_node.inputs['Strength'].default_value = emit_strength
             mix_shader = nodes.new('ShaderNodeMixShader')
-            # use factor 1.0 to prioritize emission when requested
+            # Fac = 1.0: full emission output (no BSDF bleed)
+            mix_shader.inputs['Fac'].default_value = 1.0
             links.new(emit_node.outputs['Emission'], mix_shader.inputs[1])
             links.new(principled.outputs['BSDF'], mix_shader.inputs[2])
             final_shader_output = mix_shader.outputs[0]
+            # Disable back-face culling so emission is visible from ALL
+            # camera angles — critical for JetSouth whose normals face -Z
+            # and would be invisible when camera is in the +Z hemisphere.
+            try:
+                mat.use_backface_culling = False
+            except AttributeError:
+                pass  # Older Blender builds — safe to ignore
+
 
         # Optional normal/bump generated from a noise texture for subtle detail
         if use_noise and normal_strength > 0.0:
@@ -86,8 +95,12 @@ def assign_material(args: Dict[str, Any]) -> DispatchResult:
     if is_mock():
         obj.material_slots.append(mat)
     else:
-        # In Blender, material_slots is read-only; append via the mesh data
-        obj.data.materials.append(mat)
+        # Replace slot 0 if it exists (avoids default grey material blocking
+        # our custom emission shader), otherwise append.
+        if obj.data.materials:
+            obj.data.materials[0] = mat
+        else:
+            obj.data.materials.append(mat)
 
     return DispatchResult.ok(
         {'object': obj_name, 'material': mat_name},

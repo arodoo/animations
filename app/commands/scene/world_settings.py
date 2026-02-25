@@ -177,3 +177,4 @@ def configure_eevee(args: Dict[str, Any]) -> DispatchResult:
         {'engine': 'eevee', 'width': width, 'height': height, 'samples': samples},
         command='configure_eevee'
     )
+

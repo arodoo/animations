@@ -8,5 +8,7 @@ from . import cameras
 from . import lights
 from . import materials
 from . import world_settings
+from . import grid_world
 from . import particles
 from . import material_anim
+

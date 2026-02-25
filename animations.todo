@@ -1,0 +1,61 @@
+Top 10 Animaciones — Reutilización Máxima
+🥇 1. Pulsar / Estrella de Neutrones
+Reutilización: _physics.py, _disk_build.py, _cam.py, _env.py, _bh_jets.py
+Nuevo: cambiar radios del disco, color blanco-azul, jet más estrecho y brillante, keyframe_material_emission para el pulso periódico
+Coste: ~2 archivos nuevos — _pulsar_physics.py + _pulsar_presets.py
+
+🥈 2. Sistema Solar
+Reutilización: spawn_primitive(sphere), move_object, rotate_object, create_material, _cam.py, _env.py
+Nuevo: órbitas circulares con radios parametrizados, sin física relativista
+Coste: 1 archivo — _solar_orbit.py con sin/cos de ángulo kepleriano
+
+🥉 3. Nebulosa / Nube de Gas en Colapso
+Reutilización: spawn_primitive(sphere) ×N, scale_object, keyframe_material_emission, set_world_background, _cam.py
+Nuevo: distribución aleatoria de esferas luminosas con scale animado hacia el centro
+Coste: 1 archivo — _nebula_build.py
+
+4. Colisión de Dos Agujeros Negros (Merger)
+Reutilización: _black_hole.py, _disk_build.py, _disk_animate.py, _cam.py, _env.py, _physics.py
+Nuevo: dos instancias BH con trayectorias espirales convergentes, keyframe_material_emission para la onda gravitacional
+Coste: 1 archivo — _merger_orbit.py
+
+5. Tránsito de Exoplaneta (Curva de Luz)
+Reutilización: spawn_primitive(sphere), move_object, keyframe_material_emission, create_light, _cam.py
+Nuevo: estrella central + planeta en órbita frontal, animación de brillo decayendo en tránsito
+Coste: 1 archivo — _transit_build.py
+
+6. Magnetar / Estrella con Campo Magnético
+Reutilización: _bh_jets.py (jets como polos magnéticos), _black_hole.py, _cam.py, rotate_object, _env.py
+Nuevo: 3 anillos ecuatoriales en lugar de disco plano, rotación rápida (ms period), color blanco + rayos X azul
+Coste: 1 archivo — _magnetar_build.py
+
+7. Cinturón de Asteroides
+Reutilización: spawn_primitive(sphere/cube) ×N, _disk_animate.py (rotación diferencial), _cam.py, _physics.py (P-W → Kepler simple)
+Nuevo: distribución radial + vertical aleatoria, tamaños variables
+Coste: 1 archivo — _asteroid_belt.py
+
+8. Explosión de Supernova
+Reutilización: spawn_primitive(sphere) ×N, scale_object + keyframe_material_emission, _cam.py, set_world_background
+Nuevo: onda de choque (sphere scale 1→∞), capas de color: core blanco → borde rojo, fading emission
+Coste: 1 archivo — _supernova_build.py
+
+9. Wormhole / Agujero de Gusano
+Reutilización: _disk_build.py (toros como boca del túnel), _disk_animate.py, _bh_jets.py (efecto túnel), _cam.py con dolly-in al centro
+Nuevo: segundo conjunto de toros al otro lado, distorsión vía scale_relative animado
+Coste: 1 archivo — _wormhole_build.py
+
+10. Galaxia Espiral (Vista Cenital)
+Reutilización: _disk_build.py (toros como brazos), _disk_animate.py, _physics.py, _cam.py elevación alta, set_world_background
+Nuevo: 4 brazos espirales con rotate_object offset 0/90/180/270°, más rings, star-field via create_space_world
+Coste: 2 archivos — _galaxy_arms.py + _galaxy_presets.py
+
+Resumen de infraestructura reutilizada
+Módulo existente	Usado en
+_env.py	todos (1–10)
+_cam.py	todos (1–10)
+_disk_build.py + _disk_animate.py	1, 4, 7, 9, 10
+_bh_jets.py + _jet_animate.py	1, 4, 6, 9
+_physics.py (P-W)	1, 4, 7, 10
+_black_hole.py	1, 4, 6
+_presets.py pattern	todos
+Las 10 escenas suman ~12 archivos nuevos totales — el engine ya tiene todo lo demás.
