@@ -6,13 +6,13 @@ from typing import Any, Dict
 
 PLANETS = [
     {'name': 'Mercury', 'radius_au': 2.0,  'size': 0.18,
-     'color': (0.60, 0.55, 0.50, 1.0), 'inclination_deg': 7.0, 'period_frames': 360},
+     'color': (0.60, 0.55, 0.50, 1.0), 'inclination_deg': 25.0, 'period_frames': 360},
     {'name': 'Venus',   'radius_au': 3.2,  'size': 0.28,
-     'color': (0.95, 0.85, 0.55, 1.0), 'inclination_deg': 3.4, 'period_frames': 920},
+     'color': (0.95, 0.85, 0.55, 1.0), 'inclination_deg': -18.0, 'period_frames': 920},
     {'name': 'Earth',   'radius_au': 4.6,  'size': 0.30,
-     'color': (0.15, 0.40, 0.80, 1.0), 'inclination_deg': 0.0, 'period_frames': 1500},
+     'color': (0.15, 0.40, 0.80, 1.0), 'inclination_deg': 12.0, 'period_frames': 1500},
     {'name': 'Mars',    'radius_au': 6.2,  'size': 0.22,
-     'color': (0.85, 0.30, 0.10, 1.0), 'inclination_deg': 1.8, 'period_frames': 2820},
+     'color': (0.85, 0.30, 0.10, 1.0), 'inclination_deg': -22.0, 'period_frames': 2820},
     {'name': 'Ceres',   'radius_au': 8.0,  'size': 0.10,
      'color': (0.75, 0.70, 0.65, 1.0), 'inclination_deg': 10.6, 'period_frames': 5000},
     {'name': 'Jupiter', 'radius_au': 10.8, 'size': 0.70,

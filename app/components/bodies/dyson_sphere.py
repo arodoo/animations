@@ -37,11 +37,15 @@ def build_dyson_sphere(cfg: Dict[str, Any]) -> List[Dict]:
     # 1. Vertical Meridians (Orbiting around Z)
     for i in range(meridians):
         ring_name = f"DysonMeridian_{i}"
+        
+        # Variance: each ring has a slightly different structural thickness
+        var_thickness = thickness * (0.8 + (i * 0.3))
+        
         cmds.append({'cmd': 'spawn_primitive', 'args': {
             'type': 'torus', 'name': ring_name,
             'major_segments': 128, 'minor_segments': 8,
             'major_radius': current_radius,
-            'minor_radius': thickness,
+            'minor_radius': var_thickness,
             'shade_smooth': True
         }})
         cmds.append({'cmd': 'assign_material', 'args': {
@@ -54,10 +58,11 @@ def build_dyson_sphere(cfg: Dict[str, Any]) -> List[Dict]:
             'name': ring_name, 'rotation': (math.pi/2, 0, start_angle), 'frame': 1
         }})
         
-        # Animate Meridians - Synchronous spin
+        # Animate Meridians - Independent geared spin
+        speed_mult = 1.0 + (i * 0.6)
         for f in range(1, total_frames + 1, step):
             t = (f - 1) / max(1, total_frames - 1)
-            spin = t * math.pi * 2.0 * 2.0  # revolutions
+            spin = t * math.pi * 2.0 * speed_mult  # revolutions
             cmds.append({'cmd': 'rotate_object', 'args': {
                 'name': ring_name, 'rotation': (math.pi/2, 0, start_angle + spin), 'frame': f
             }})
@@ -88,11 +93,13 @@ def build_dyson_sphere(cfg: Dict[str, Any]) -> List[Dict]:
             # adding clearance to ensure outer wrapping
             slice_r = math.sqrt(max(0.1, current_radius**2 - z_val**2))
             
+            var_thickness = thickness * (0.6 + (i * 0.4))
+            
             cmds.append({'cmd': 'spawn_primitive', 'args': {
                 'type': 'torus', 'name': ring_name,
                 'major_segments': 128, 'minor_segments': 8,
                 'major_radius': slice_r,
-                'minor_radius': thickness,
+                'minor_radius': var_thickness,
                 'shade_smooth': True
             }})
             cmds.append({'cmd': 'assign_material', 'args': {
@@ -102,12 +109,13 @@ def build_dyson_sphere(cfg: Dict[str, Any]) -> List[Dict]:
                 'name': ring_name, 'location': (0, 0, z_val), 'frame': 1
             }})
             
-            # Animate Parallels - Counter-rotation
+            # Animate Parallels - Independent counter-rotation
             # Alternating speeds/directions per parallel
             direction = 1 if i % 2 == 0 else -1
+            speed_mult = 0.5 + (i * 0.8)
             for f in range(1, total_frames + 1, step):
                 t = (f - 1) / max(1, total_frames - 1)
-                spin = direction * t * math.pi * 2.0 * 1.5
+                spin = direction * t * math.pi * 2.0 * speed_mult
                 cmds.append({'cmd': 'rotate_object', 'args': {
                     'name': ring_name, 'rotation': (0, 0, spin), 'frame': f
                 }})

@@ -12,11 +12,18 @@ from app.components.bodies.dyson_sphere import build_dyson_sphere
 def _build_materials() -> List[Dict]:
     return [
         {'cmd': 'create_metal_material', 'args': {
-            'name': 'BrassMat',
+            'name': 'SunCoreMat',
             'color': (0.8, 0.6, 0.2, 1.0),
             'roughness': 0.15,
             'metallic': 1.0,
-            'emit_strength': 2.0,  # Slight glow to the brass
+            'emit_strength': 2.0,  # Glowing core
+        }},
+        {'cmd': 'create_metal_material', 'args': {
+            'name': 'CopperClockworkMat',
+            'color': (0.85, 0.45, 0.20, 1.0), # Brighter, more visible copper
+            'roughness': 0.25,
+            'metallic': 1.0,
+            'emit_strength': 0.8, # Subtle luminescence for space visibility
         }},
         {'cmd': 'create_metal_material', 'args': {
             'name': 'GoldMat',
@@ -39,7 +46,7 @@ def _build_sun_core() -> List[Dict]:
     return build_celestial_body({
         'name': 'SunCore',
         'radius': 0.9,
-        'material': 'BrassMat',
+        'material': 'SunCoreMat',
         'subsurf': 2,
     })
 
@@ -51,7 +58,7 @@ def _build_center(total_frames: int, step: int) -> List[Dict]:
     cmds += build_dyson_sphere({
         'base_radius': 1.15,
         'ring_thickness': 0.008,
-        'materials': ['GoldMat', 'BrassMat'],
+        'materials': ['CopperClockworkMat', 'SteelMat'],
         'meridians': 4,
         'parallels': 3,
         'clearance': 0.02, # 20mm clearance radius expansion per group
@@ -95,15 +102,23 @@ def _build_planet_mechanism(
         'shade_smooth': True
     }})
     cmds.append({'cmd': 'assign_material', 'args': {
-        'object': track, 'material': 'BrassMat'
+        'object': track, 'material': 'CopperClockworkMat'
     }})
     cmds.append({'cmd': 'move_object', 'args': {
         'name': track, 'location': (0.0, 0.0, z_offset), 'frame': 1
     }})
-    # Rotate track by orbital inclination
+    # Rotate track by its fixed orbital inclination
     cmds.append({'cmd': 'rotate_object', 'args': {
         'name': track, 'rotation': (inc, 0.0, 0.0), 'frame': 1
     }})
+    
+    # Orbiting Precession for the Track (so it's not a static ring)
+    track_precession_period = period * 4.0 # The track rotates much slower than the planet
+    for f in range(1, total_frames + 1, step):
+        t_angle = 2.0 * math.pi * (f / track_precession_period)
+        cmds.append({'cmd': 'rotate_object', 'args': {
+            'name': track, 'rotation': (inc, 0.0, t_angle), 'frame': f
+        }})
     
     # 2. The Arm (Cylinder connecting center to planet)
     arm = f"{name}_Arm"
@@ -112,7 +127,7 @@ def _build_planet_mechanism(
         'vertices': 16, 'depth': 1.0
     }})
     cmds.append({'cmd': 'assign_material', 'args': {
-        'object': arm, 'material': 'BrassMat'
+        'object': arm, 'material': 'CopperClockworkMat'
     }})
     # Scale: thin cylinder, length r. It spans -r/2 to r/2 on Z.
     cmds.append({'cmd': 'scale_object', 'args': {
