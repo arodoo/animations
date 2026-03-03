@@ -1,32 +1,46 @@
 # File: scenes/math_sets/animations/_materials.py
-# Materials designating mathematical realities (Evens, Odds, Typography).
+# Materials for the Math Sets implication proof.
 # All Rights Reserved Arodi Emmanuel
 
 from typing import Dict, List
 
 
 def generate_math_materials() -> List[Dict]:
-    """Return materials that differentiate mathematical sets."""
+    """Materials for sets and logical states."""
     return [
         {'cmd': 'create_material', 'args': {
             'name': 'EvenMat',
-            'color': (0.1, 0.15, 0.2, 1.0), # Cold, dim steel for evens
-            'roughness': 0.1,
+            'color': (0.1, 0.2, 0.4, 1.0),
+            'roughness': 0.2,
             'emit': True,
-            'emit_strength': 0.1, # Barely visible
+            'emit_strength': 0.8,
         }},
         {'cmd': 'create_material', 'args': {
             'name': 'OddMat',
-            'color': (1.0, 0.5, 0.0, 1.0), # Brilliant golden/orange for odds
-            'roughness': 0.3,
+            'color': (1.0, 0.55, 0.0, 1.0),
+            'roughness': 0.2,
             'emit': True,
-            'emit_strength': 5.0, # Highly visible
+            'emit_strength': 4.0,
         }},
         {'cmd': 'create_material', 'args': {
             'name': 'TextMat',
-            'color': (1.0, 1.0, 1.0, 1.0), # Pure white for readable math
+            'color': (1.0, 1.0, 1.0, 1.0),
             'roughness': 0.8,
             'emit': True,
             'emit_strength': 1.5,
+        }},
+        {'cmd': 'create_material', 'args': {
+            'name': 'TrueMat',
+            'color': (0.0, 0.9, 0.3, 1.0),
+            'roughness': 0.5,
+            'emit': True,
+            'emit_strength': 3.0,
+        }},
+        {'cmd': 'create_material', 'args': {
+            'name': 'FalseMat',
+            'color': (1.0, 0.1, 0.1, 1.0),
+            'roughness': 0.5,
+            'emit': True,
+            'emit_strength': 3.0,
         }},
     ]

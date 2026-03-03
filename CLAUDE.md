@@ -22,4 +22,4 @@ ALWAYS
 Split proactively, not reactively
 Keep each file focused on ONE responsibility
 
-Respond in a technical and direct manner. Omit introductions, conclusions, and polite phrases. If the code is self-explanatory, do not add additional comments. Just a brief resume.
+Respond in a technical and direct manner. Omit introductions, conclusions, and polite phrases. 
