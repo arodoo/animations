@@ -2,6 +2,10 @@ applyTo: '**'
 
 ## Key Principles for this codebase
 The main idea os to have a farm of reusable animations. This means, a complex escene should always be built by combining simple, reusable animations. 
+iNVESTIGATE THE FILE STRUCTURE BEFORE TO START CODING. 
+
+## Key principles for launchers (IMPORTANT)
+Launchers are files I can easily modify while editing the escene. Separe timing of the animations in variables and set them at the launcher. This way, I can easily modify the timing of the escene without having to open each animation file.
 
 Code Quality Rules
 Production-ready code only (no TODO, FIXME, or commented-out code)

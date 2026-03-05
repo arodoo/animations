@@ -129,6 +129,23 @@ class ObjectOps:
         return {'FINISHED'}
 
     @staticmethod
+    def text_add(
+        location: tuple = (0, 0, 0),
+        rotation: tuple = (0, 0, 0),
+        scale: tuple = (1, 1, 1),
+        **kwargs
+    ) -> Set[str]:
+        """Add a FONT (text) object."""
+        from ..entities.mock_font import MockFontData
+        font = MockFontData("Text")
+        obj = bpy_data.data.objects.new("Text", font)
+        obj.type = 'FONT'
+        obj.location = location
+        bpy_context.context.view_layer.objects.link(obj)
+        bpy_context.context.active_object = obj
+        return {'FINISHED'}
+
+    @staticmethod
     def delete() -> Set[str]:
         """Delete active object."""
         active = bpy_context.context.active_object

@@ -7,55 +7,51 @@ from pathlib import Path
 
 project_root = Path(__file__).parent.parent.parent
 if str(project_root) not in sys.path:
-  sys.path.insert(0, str(project_root))
+    sys.path.insert(0, str(project_root))
 
 from scenes.euler_diagram.scene import create_scene
-from scenes.euler_diagram.animations._timing import (
-  Timing,
-)
+from scenes.euler_diagram.animations._timing import Timing
+
+_PRESETS = {
+    'low': {
+        'total_frames': 600,
+        'timing': Timing(
+            ring_inner=60,
+            odds_appear=120,
+            zoom_start=200,
+            ring_outer=300,
+            outer_nums=360,
+            zoom_end=480,
+            labels=510,
+        ),
+    },
+    'high': {
+        'total_frames': 1200,
+        'timing': Timing(
+            ring_inner=80,
+            odds_appear=160,
+            zoom_start=320,
+            ring_outer=540,
+            outer_nums=620,
+            zoom_end=900,
+            labels=940,
+        ),
+    },
+}
 
 
 def create_euler_animation(
-  quality: str = 'low',
+    quality: str = 'low',
 ) -> dict:
-  """
-  Creates an Expanding Euler Diagram animation.
-
-  Args:
-      quality: 'low' | 'high'
-  """
-  presets = {
-    'low': {
-      'total_frames': 600,
-      'timing': Timing(
-        odds_appear=100,
-        zoom_start=200,
-        zoom_end=500,
-        text_appear=550,
-      ),
-    },
-    'high': {
-      'total_frames': 1200,
-      'timing': Timing(
-        odds_appear=150,
-        zoom_start=300,
-        zoom_end=900,
-        text_appear=1000,
-      ),
-    },
-  }
-
-  if quality not in presets:
-    raise ValueError(
-      f"quality: {list(presets)}; got '{quality}'"
+    """Create Expanding Euler Diagram animation."""
+    if quality not in _PRESETS:
+        raise ValueError(
+            f"quality must be {list(_PRESETS)},"
+            f" got '{quality}'"
+        )
+    p = _PRESETS[quality]
+    result = create_scene(
+        total_frames=p['total_frames'],
+        timing=p['timing'],
     )
-
-  p = presets[quality]
-  result = create_scene(
-    total_frames=p['total_frames'],
-    timing=p['timing'],
-  )
-  return {
-    **result,
-    'quality': quality,
-  }
+    return {**result, 'quality': quality}

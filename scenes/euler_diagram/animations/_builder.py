@@ -1,5 +1,5 @@
 # File: scenes/euler_diagram/animations/_builder.py
-# Orchestrates the expanding Euler diagram proof.
+# Orchestrates the 3-act Euler diagram proof.
 # All Rights Reserved Arodi Emmanuel
 
 from typing import Dict, List
@@ -11,17 +11,16 @@ from ._timing import Timing
 
 
 def build_euler_diagram(
-  total_frames: int,
-  timing: Timing = None,
+    total_frames: int,
+    timing: Timing = None,
 ) -> List[Dict]:
-  """
-  Build Euler diagram proof:
-  1. Small circle reveals odd numbers
-  2. Massive zoom-out reveals large circle
-  3. Large circle contains all number types
-  """
-  t = timing or Timing()
-  cmds: List[Dict] = build_materials()
-  cmds += build_inner_circle(t.odds_appear)
-  cmds += build_outer_circle(t.zoom_start)
-  return cmds
+    """
+    Act 1: Inner ring scales in, odds 1/3/5/7 pop in.
+    Act 2: Camera pulls back (handled by scene).
+    Act 3: Outer ring + diverse numbers revealed.
+    """
+    t = timing or Timing()
+    cmds: List[Dict] = build_materials()
+    cmds += build_inner_circle(t.ring_inner, t.odds_appear)
+    cmds += build_outer_circle(t.ring_outer, t.outer_nums)
+    return cmds
