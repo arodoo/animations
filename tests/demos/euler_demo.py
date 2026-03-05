@@ -10,7 +10,7 @@ if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
 from scenes.euler_diagram.scene import create_scene
-from scenes.euler_diagram.animations._timing import Timing
+from scenes.euler_diagram.animations.domain.timing import Timing
 
 _PRESETS = {
     'low': {
@@ -25,8 +25,8 @@ _PRESETS = {
         ),
     },
     'high': {
-        'total_frames': 2880,
-        'timing': Timing(),   # default timing
+        'total_frames': 4800,
+        'timing': Timing(),
     },
 }
 

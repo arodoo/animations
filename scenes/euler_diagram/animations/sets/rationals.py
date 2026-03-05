@@ -1,22 +1,23 @@
-# File: scenes/euler_diagram/animations/_rationals.py
-# 150 rational fractions on the nautilus spiral.
+# Rational fractions on the nautilus spiral.
 # All Rights Reserved Arodi Emmanuel
 
 from fractions import Fraction as _F
 from typing import Dict, List
 
-from ._helpers import text_reveal
-from ._spiral import pos, RAT_START, sz_at
+from ..domain.reveal import text_reveal, reveal_duration
+from ..domain.spiral import pos, RAT_START, sz_at
+from ..domain.motion import build_idle_bob
 
-_BASE_SZ = 0.70
-_STAGGER = 4
+_STAGGER = reveal_duration()
 _BOUNCE = 1.3
+_TOTAL_FRAMES = 4800
+_COUNT = 210
 
 
 def _gen() -> List[str]:
-    """150 unique reduced fractions."""
+    """210 unique reduced fractions."""
     seen, out = set(), []
-    for d in range(2, 60):
+    for d in range(2, 80):
         for n in range(1, d * 3 + 1):
             if n == d:
                 continue
@@ -29,7 +30,7 @@ def _gen() -> List[str]:
                     f'{frac.numerator}'
                     f'/{frac.denominator}'
                 )
-                if len(out) == 150:
+                if len(out) == _COUNT:
                     return out
     return out
 
@@ -39,9 +40,10 @@ _NUMS = _gen()
 
 def build_rationals(
     appear_frame: int,
-    base_sz: float = _BASE_SZ,
+    base_sz: float = 0.70,
+    total_frames: int = _TOTAL_FRAMES,
 ) -> List[Dict]:
-    """150 fractions, stagger 4f, orange."""
+    """210 fractions, strictly sequential, green."""
     cmds: List[Dict] = []
     for i, text in enumerate(_NUMS):
         x, y = pos(RAT_START + i)
@@ -51,5 +53,10 @@ def build_rationals(
             f'Rat{i}', text,
             x, y, 'MatRat', f,
             sz=sz, bounce=_BOUNCE,
+            extrude=0.08,
+        )
+        cmds += build_idle_bob(
+            f'Rat{i}', x, y, f,
+            total_frames, amplitude=0.12,
         )
     return cmds

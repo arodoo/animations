@@ -1,13 +1,11 @@
-# File: scenes/euler_diagram/animations/_helpers.py
-# Shared bounce-reveal builder for text numbers.
+# Bounce-reveal builder for 3D text numbers.
 # All Rights Reserved Arodi Emmanuel
 
 import math
 from typing import Dict, List
 
-# Rx(0): text lies flat on XY plane, facing up toward camera
-# Rz(pi/4): top of glyphs points toward camera azimuth pi/4
 _TEXT_ROT = (0.0, 0.0, math.pi / 4)
+_REVEAL_FRAMES = 24
 
 
 def text_reveal(
@@ -19,8 +17,9 @@ def text_reveal(
     frame: int,
     sz: float = 0.45,
     bounce: float = 1.3,
+    extrude: float = 0.12,
 ) -> List[Dict]:
-    """Spawn text + bounce scale-in (upright, facing camera)."""
+    """Spawn text with bounce scale-in and 3D depth."""
     ov = sz * bounce
     return [
         {'cmd': 'spawn_text', 'args': {
@@ -28,7 +27,7 @@ def text_reveal(
             'text': text,
             'location': (x, y, 0.0),
             'rotation': _TEXT_ROT,
-            'extrude': 0.0,
+            'extrude': extrude,
             'align_x': 'CENTER',
             'align_y': 'CENTER',
         }},
@@ -49,6 +48,11 @@ def text_reveal(
         {'cmd': 'scale_object', 'args': {
             'name': name,
             'scale': (sz, sz, sz),
-            'frame': frame + 20,
+            'frame': frame + _REVEAL_FRAMES,
         }},
     ]
+
+
+def reveal_duration() -> int:
+    """Total frames one reveal takes to complete."""
+    return _REVEAL_FRAMES

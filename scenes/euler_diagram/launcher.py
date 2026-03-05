@@ -4,7 +4,9 @@
 
 import sys
 
-PROJECT_PATH = r"d:\zProyectos\01Python\animations"
+PROJECT_PATH = (
+    r"d:\zProyectos\01Python\animations"
+)
 if PROJECT_PATH not in sys.path:
     sys.path.insert(0, PROJECT_PATH)
 
@@ -12,39 +14,43 @@ for m in list(sys.modules.keys()):
     if m.startswith('app.') or m.startswith('scenes.'):
         del sys.modules[m]
 
-from scenes.euler_diagram.scene import create_scene
-from scenes.euler_diagram.animations._timing import Timing
+from scenes.euler_diagram.scene import (
+    create_scene,
+)
+from scenes.euler_diagram.animations.domain.timing import (
+    Timing,
+)
 
-# --- Spacing (1.0 = default, >1 more space, <1 less) ---
 SPIRAL_SCALE = 1.0
+LABEL_SIZE = 1.80
 
-# --- Label size ('0' and set names like 'Impares') ---
-LABEL_SIZE = 1.60
-
-# --- Per-set config: color (R,G,B), emit strength, size ---
 SETS = {
-    'odds':      {'color': (1.0, 0.92, 0.00), 'emit': 32.0, 'size': 0.92},
-    'naturals':  {'color': (0.0, 1.00, 0.85), 'emit': 22.0, 'size': 0.92},
-    'integers':  {'color': (0.3, 0.00, 1.00), 'emit': 26.0, 'size': 0.80},
-    'rationals': {'color': (0.0, 0.95, 0.30), 'emit': 22.0, 'size': 0.70},
-    'reals':     {'color': (1.0, 0.00, 0.60), 'emit': 26.0, 'size': 0.70},
+    'odds':      {'color': (1.0, 0.95, 0.15),
+                  'emit': 48.0, 'size': 0.92},
+    'naturals':  {'color': (0.1, 1.00, 0.95),
+                  'emit': 30.0, 'size': 0.92},
+    'integers':  {'color': (0.6, 0.30, 1.00),
+                  'emit': 34.0, 'size': 0.80},
+    'rationals': {'color': (0.2, 1.00, 0.40),
+                  'emit': 30.0, 'size': 0.70},
+    'reals':     {'color': (1.0, 0.20, 0.70),
+                  'emit': 34.0, 'size': 0.70},
 }
 
-# --- Act timings (frames at 24fps ≈ 2 min) ---
 TIMING = Timing(
     odds_start=60,
-    nat_start=540,
-    int_start=1200,
-    rat_start=1830,
-    real_start=2460,
-    finale=2720,
+    nat_start=600,
+    int_start=1500,
+    rat_start=2400,
+    real_start=3600,
+    finale=4600,
 )
 
 
 def run():
-    print("--- Starting Euler Diagram Scene ---")
+    print("--- Starting Euler Scene ---")
     results = create_scene(
-        total_frames=2880,
+        total_frames=4800,
         timing=TIMING,
         spiral_scale=SPIRAL_SCALE,
         sets=SETS,
@@ -57,18 +63,21 @@ def run():
 
     try:
         import bpy
-        for area in bpy.context.screen.areas:
-            if area.type == 'VIEW_3D':
-                for space in area.spaces:
-                    if space.type == 'VIEW_3D':
-                        sh = space.shading
-                        sh.type = 'RENDERED'
-                        sh.use_scene_lights = True
-                        sh.use_scene_world = True
+        areas = bpy.context.screen.areas
+        for area in areas:
+            if area.type != 'VIEW_3D':
+                continue
+            for sp in area.spaces:
+                if sp.type != 'VIEW_3D':
+                    continue
+                sh = sp.shading
+                sh.type = 'RENDERED'
+                sh.use_scene_lights = True
+                sh.use_scene_world = True
         bpy.context.scene.frame_set(1)
         bpy.ops.screen.animation_play()
     except Exception as exc:
-        print(f"Blender viewport setup skipped: {exc}")
+        print(f"Viewport setup skipped: {exc}")
 
 
 if __name__ == "__main__":

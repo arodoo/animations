@@ -1,41 +1,34 @@
-# File: scenes/euler_diagram/animations/_labels.py
-# Set labels and zero, placed along the spiral.
+# Labels at set midpoints and zero at origin.
 # All Rights Reserved Arodi Emmanuel
 
 import math
 from typing import Dict, List
 
-from ._helpers import text_reveal
-from ._timing import Timing
-from ._spiral import pos, sz_at_r
+from ..domain.reveal import text_reveal
+from ..domain.timing import Timing
+from ..domain.spiral import pos, sz_at_r
 
-# (name, text, spiral_idx, mat, delay_after_set_start)
-# Indices = midpoints of each set: odds 0-44, nat 45-134,
-# int 135-254, rat 255-404, real 405-479
 _LABEL_DEFS = [
-    ('LblOdds', 'Impares',    22, 'MatOdds', 160),
-    ('LblNat',  'Naturales',  90, 'MatNat',  223),
-    ('LblInt',  'Enteros',   195, 'MatInt',  215),
-    ('LblRat', 'Racionales', 330, 'MatRat',  216),
-    ('LblReal', 'Reales',    442, 'MatReal',  92),
+    ('LblOdds', 'Impares',    30, 'MatOdds', 180),
+    ('LblNat',  'Naturales', 135, 'MatNat',  250),
+    ('LblInt',  'Enteros',   300, 'MatInt',  240),
+    ('LblRat', 'Racionales', 495, 'MatRat',  250),
+    ('LblReal', 'Reales',    660, 'MatReal', 120),
 ]
 
 
 def _out_pos(idx: int):
-    """Outward label position; returns (x, y, r_spiral)."""
+    """Outward label position."""
     x, y = pos(idx)
     r = math.hypot(x, y)
     a = math.atan2(y, x)
-    r2 = r * 1.35
+    r2 = r * 1.40
     return r2 * math.cos(a), r2 * math.sin(a), r
-
-
-_DEFAULT_LABEL_SZ = 1.60
 
 
 def build_labels(
     t: Timing,
-    label_sz: float = _DEFAULT_LABEL_SZ,
+    label_sz: float = 1.80,
 ) -> List[Dict]:
     """Labels at set midpoints + '0' at center."""
     starts = [
@@ -51,10 +44,11 @@ def build_labels(
         f = s + delay
         cmds += text_reveal(
             name, text, x, y, mat, f,
-            sz=lbl_sz,
+            sz=lbl_sz, extrude=0.20,
         )
     cmds += text_reveal(
         'Zero', '0', 0.0, 0.0, 'MatOdds',
-        t.odds_start, sz=label_sz, bounce=1.5,
+        t.odds_start, sz=label_sz,
+        bounce=1.5, extrude=0.25,
     )
     return cmds
