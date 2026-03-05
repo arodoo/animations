@@ -3,6 +3,7 @@
 # All Rights Reserved Arodi Emmanuel
 
 from . import spawn_primitive
+from . import spawn_text
 from . import hierarchy
 from . import object_mgmt
 from . import object_locks
