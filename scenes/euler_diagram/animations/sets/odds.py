@@ -15,7 +15,7 @@ _TOTAL_FRAMES = 4800
 
 def build_odds(
     appear_frame: int,
-    base_sz: float = 0.92,
+    base_sz: float = 1.0,
     total_frames: int = _TOTAL_FRAMES,
 ) -> List[Dict]:
     """60 golden odds, strictly sequential."""
@@ -28,10 +28,10 @@ def build_odds(
             f'Odd{i}', str(num),
             x, y, 'MatOdds', f,
             sz=sz, bounce=_BOUNCE,
-            extrude=0.18,
+            extrude=0.015,
         )
         cmds += build_idle_bob(
             f'Odd{i}', x, y, f,
-            total_frames, amplitude=0.30,
+            total_frames, amplitude=0.04,
         )
     return cmds

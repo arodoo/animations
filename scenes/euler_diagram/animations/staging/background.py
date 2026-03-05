@@ -1,4 +1,4 @@
-# Grid floor + XY axes only (no Z tube).
+# Grid floor + XY axes sized for tight spiral.
 # All Rights Reserved Arodi Emmanuel
 
 import math
@@ -11,24 +11,24 @@ _AXES = [
 
 
 def build_background() -> List[Dict]:
-    """Grid floor and thin XY axis lines. No Z axis."""
+    """30-BU grid + thin XY axis lines. No Z axis."""
     cmds: List[Dict] = [
         {'cmd': 'create_cartesian_grid', 'args': {
-            'size': 400,
-            'grid_scale': 10,
-            'z_offset': -2.5,
+            'size': 60,
+            'grid_scale': 2,
+            'z_offset': -0.3,
             'bg_color': (0.01, 0.012, 0.03, 1.0),
-            'line_color': (0.06, 0.09, 0.22, 1.0),
+            'line_color': (0.08, 0.12, 0.30, 1.0),
         }},
     ]
     for name, rot, mat in _AXES:
         cmds.append({'cmd': 'spawn_primitive', 'args': {
             'type': 'cylinder',
             'name': name,
-            'location': (0, 0, -2.0),
+            'location': (0, 0, -0.2),
             'rotation': rot,
             'radius': 0.04,
-            'depth': 120,
+            'depth': 50,
         }})
         cmds.append({'cmd': 'assign_material', 'args': {
             'object': name,

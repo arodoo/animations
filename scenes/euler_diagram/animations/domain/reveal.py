@@ -1,11 +1,11 @@
 # Bounce-reveal builder for 3D text numbers.
 # All Rights Reserved Arodi Emmanuel
 
-import math
 from typing import Dict, List
 
-_TEXT_ROT = (0.0, 0.0, math.pi / 4)
-_REVEAL_FRAMES = 24
+# Flat on XY plane, glyphs pointing +Y (readable top-down)
+_TEXT_ROT = (1.5708, 0.0, 0.0)
+_REVEAL_FRAMES = 18
 
 
 def text_reveal(
@@ -17,7 +17,7 @@ def text_reveal(
     frame: int,
     sz: float = 0.45,
     bounce: float = 1.3,
-    extrude: float = 0.12,
+    extrude: float = 0.015,
 ) -> List[Dict]:
     """Spawn text with bounce scale-in and 3D depth."""
     ov = sz * bounce

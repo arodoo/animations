@@ -15,7 +15,7 @@ _TOTAL_FRAMES = 4800
 
 def build_integers(
     appear_frame: int,
-    base_sz: float = 0.80,
+    base_sz: float = 0.82,
     total_frames: int = _TOTAL_FRAMES,
 ) -> List[Dict]:
     """180 negatives, strictly sequential, violet."""
@@ -28,10 +28,10 @@ def build_integers(
             f'Int{i}', str(num),
             x, y, 'MatInt', f,
             sz=sz, bounce=_BOUNCE,
-            extrude=0.10,
+            extrude=0.015,
         )
         cmds += build_idle_bob(
             f'Int{i}', x, y, f,
-            total_frames, amplitude=0.15,
+            total_frames, amplitude=0.02,
         )
     return cmds

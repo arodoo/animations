@@ -1,19 +1,21 @@
-# Dramatic zoom-out camera at 55° elevation.
+# Top-down zoom-out matching spiral R_MIN=3.5..R_MAX=18.
 # All Rights Reserved Arodi Emmanuel
 
 import math
 from typing import Dict, List
 
+# (frame, horiz_dist, height)
+# At each stage the camera views the current act's ring.
 _STAGES = [
-    (0,    14,  20),
-    (600,  22,  31),
-    (1500, 38,  54),
-    (2400, 56,  80),
-    (3600, 78, 112),
-    (4800, 86, 123),
+    (0,     4.5,  6.5),  # odds: r~3.5..4
+    (600,   7,   10),    # naturals: r~4..6
+    (1500, 11,   15),    # integers: r~6..10
+    (2400, 15,   21),    # rationals: r~10..14
+    (3600, 20,   27),    # irrationals: r~14..18
+    (4800, 23,   31),    # finale
 ]
 _BASE = math.pi / 4
-_SWEEP = math.pi / 8
+_SWEEP = math.pi / 6
 
 
 def _interp(frame: int, stages: list):
@@ -34,21 +36,21 @@ def build_camera(
     total_frames: int,
     scale: float = 1.0,
 ) -> List[Dict]:
-    """55°-elevation zoom-out for flat spiral."""
+    """Top-down zoom-out over the spiral."""
     stages = list(_STAGES)
     cmds: List[Dict] = [
         {'cmd': 'create_camera',
          'args': {'name': 'SceneCamera'}},
         {'cmd': 'set_focal_length', 'args': {
             'name': 'SceneCamera',
-            'focal_length': 70.0,
+            'focal_length': 50.0,
         }},
         {'cmd': 'set_camera_target', 'args': {
             'name': 'SceneCamera',
             'target': (0, 0, 0),
         }},
     ]
-    for f in range(1, total_frames + 1, 15):
+    for f in range(1, total_frames + 1, 12):
         dist, h = _interp(f, stages)
         t = f / total_frames
         angle = _BASE + t * _SWEEP

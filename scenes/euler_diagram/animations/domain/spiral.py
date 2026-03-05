@@ -1,22 +1,23 @@
-# Logarithmic (nautilus) spiral with collision-free spacing.
+# Logarithmic (nautilus) spiral — self-consistent proportions.
 # All Rights Reserved Arodi Emmanuel
 
 import math
 
+# 720 slots, 4.5 turns.
+# R_MIN=3.5: inner arc_gap = 3.5*(4.5*2pi/720) = 0.137 BU
+# Text floor=0.12 BU → ratio ~1.14 ✔
+# Camera start: dist=6, h=9 → cam_dist~11 BU
+# Text angular size: 0.12/11 ≈ 0.6° -- supplemented by bloom
 TOTAL = 720
-TURNS = 6.5
+TURNS = 4.5
 _ANGLE = TURNS * math.tau
 
-_BASE_R_MIN = 6.0
-_BASE_R_MAX = 95.0
-_BASE_CAM_MIN = 16.0
-_BASE_CAM_MAX = 105.0
+_BASE_R_MIN = 3.5
+_BASE_R_MAX = 18.0
 
 R_MIN = _BASE_R_MIN
 R_MAX = _BASE_R_MAX
 _B = math.log(R_MAX / R_MIN) / _ANGLE
-_CAM_MIN = _BASE_CAM_MIN
-_CAM_MAX = _BASE_CAM_MAX
 
 ODDS_START = 0
 NAT_START = 60
@@ -27,12 +28,10 @@ REAL_START = 600
 
 def configure(scale: float = 1.0):
     """Recompute spiral constants for given scale."""
-    global R_MIN, R_MAX, _B, _CAM_MIN, _CAM_MAX
+    global R_MIN, R_MAX, _B
     R_MIN = _BASE_R_MIN * scale
     R_MAX = _BASE_R_MAX * scale
     _B = math.log(R_MAX / R_MIN) / _ANGLE
-    _CAM_MIN = _BASE_CAM_MIN * scale
-    _CAM_MAX = _BASE_CAM_MAX * scale
 
 
 def pos(index: int):
@@ -49,15 +48,14 @@ def radius_at(index: int) -> float:
 
 
 def sz_at(index: int, base: float) -> float:
-    """Scale for constant angular size at index."""
+    """Text size: 75% of local arc gap.
+    Emission bloom compensates at inner radii."""
     r = radius_at(index)
-    t = max(0.0, min(1.0, (r - R_MIN) / (R_MAX - R_MIN)))
-    cam = _CAM_MIN + t * (_CAM_MAX - _CAM_MIN)
-    return base * math.sqrt(cam / _CAM_MIN)
+    arc_gap = r * (_ANGLE / TOTAL)
+    return arc_gap * 0.75 * base
 
 
 def sz_at_r(r: float, base: float) -> float:
-    """Scale for constant angular size at radius r."""
-    t = max(0.0, min(1.0, (r - R_MIN) / (R_MAX - R_MIN)))
-    cam = _CAM_MIN + t * (_CAM_MAX - _CAM_MIN)
-    return base * math.sqrt(cam / _CAM_MIN)
+    """Text size at radius r."""
+    arc_gap = r * (_ANGLE / TOTAL)
+    return arc_gap * 0.75 * base

@@ -15,7 +15,7 @@ _TOTAL_FRAMES = 4800
 
 def build_naturals(
     appear_frame: int,
-    base_sz: float = 0.92,
+    base_sz: float = 0.88,
     total_frames: int = _TOTAL_FRAMES,
 ) -> List[Dict]:
     """150 even naturals, strictly sequential, teal."""
@@ -28,10 +28,10 @@ def build_naturals(
             f'Nat{i}', str(num),
             x, y, 'MatNat', f,
             sz=sz, bounce=_BOUNCE,
-            extrude=0.12,
+            extrude=0.015,
         )
         cmds += build_idle_bob(
             f'Nat{i}', x, y, f,
-            total_frames, amplitude=0.15,
+            total_frames, amplitude=0.02,
         )
     return cmds

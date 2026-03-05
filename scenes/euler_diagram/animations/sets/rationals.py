@@ -40,7 +40,7 @@ _NUMS = _gen()
 
 def build_rationals(
     appear_frame: int,
-    base_sz: float = 0.70,
+    base_sz: float = 0.75,
     total_frames: int = _TOTAL_FRAMES,
 ) -> List[Dict]:
     """210 fractions, strictly sequential, green."""
@@ -53,10 +53,10 @@ def build_rationals(
             f'Rat{i}', text,
             x, y, 'MatRat', f,
             sz=sz, bounce=_BOUNCE,
-            extrude=0.08,
+            extrude=0.015,
         )
         cmds += build_idle_bob(
             f'Rat{i}', x, y, f,
-            total_frames, amplitude=0.12,
+            total_frames, amplitude=0.02,
         )
     return cmds

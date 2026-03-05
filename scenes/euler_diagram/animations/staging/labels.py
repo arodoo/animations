@@ -22,13 +22,13 @@ def _out_pos(idx: int):
     x, y = pos(idx)
     r = math.hypot(x, y)
     a = math.atan2(y, x)
-    r2 = r * 1.40
+    r2 = r * 1.50
     return r2 * math.cos(a), r2 * math.sin(a), r
 
 
 def build_labels(
     t: Timing,
-    label_sz: float = 1.80,
+    label_sz: float = 1.10,
 ) -> List[Dict]:
     """Labels at set midpoints + '0' at center."""
     starts = [
@@ -44,11 +44,11 @@ def build_labels(
         f = s + delay
         cmds += text_reveal(
             name, text, x, y, mat, f,
-            sz=lbl_sz, extrude=0.20,
+            sz=lbl_sz, extrude=0.015,
         )
     cmds += text_reveal(
         'Zero', '0', 0.0, 0.0, 'MatOdds',
-        t.odds_start, sz=label_sz,
-        bounce=1.5, extrude=0.25,
+        t.odds_start, sz=0.35,
+        bounce=1.5, extrude=0.02,
     )
     return cmds

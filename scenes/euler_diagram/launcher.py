@@ -22,19 +22,19 @@ from scenes.euler_diagram.animations.domain.timing import (
 )
 
 SPIRAL_SCALE = 1.0
-LABEL_SIZE = 1.80
+LABEL_SIZE = 1.10
 
 SETS = {
     'odds':      {'color': (1.0, 0.95, 0.15),
-                  'emit': 48.0, 'size': 0.92},
+                  'emit': 48.0, 'size': 1.00},
     'naturals':  {'color': (0.1, 1.00, 0.95),
-                  'emit': 30.0, 'size': 0.92},
+                  'emit': 30.0, 'size': 0.88},
     'integers':  {'color': (0.6, 0.30, 1.00),
-                  'emit': 34.0, 'size': 0.80},
+                  'emit': 34.0, 'size': 0.82},
     'rationals': {'color': (0.2, 1.00, 0.40),
-                  'emit': 30.0, 'size': 0.70},
+                  'emit': 30.0, 'size': 0.75},
     'reals':     {'color': (1.0, 0.20, 0.70),
-                  'emit': 34.0, 'size': 0.70},
+                  'emit': 34.0, 'size': 0.75},
 }
 
 TIMING = Timing(

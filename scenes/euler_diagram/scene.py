@@ -18,7 +18,7 @@ def create_scene(
     timing: Timing = None,
     spiral_scale: float = 1.0,
     sets: dict = None,
-    label_size: float = 1.80,
+    label_size: float = 1.10,
 ) -> Dict[str, Any]:
     """Build and dispatch the Euler Diagram animation."""
     batch = []
@@ -32,18 +32,18 @@ def create_scene(
         ],
     })
     batch.append({'cmd': 'set_light_energy', 'args': {
-        'name': 'KeyLight', 'energy': 2000.0,
+        'name': 'KeyLight', 'energy': 600.0,
     }})
     batch.append({'cmd': 'move_object', 'args': {
         'name': 'KeyLight',
-        'location': (0, 0, 40),
+        'location': (0, 0, 15),
     }})
     batch.append({'cmd': 'set_light_energy', 'args': {
-        'name': 'FillLight', 'energy': 800.0,
+        'name': 'FillLight', 'energy': 200.0,
     }})
     batch.append({'cmd': 'move_object', 'args': {
         'name': 'FillLight',
-        'location': (30, -30, 25),
+        'location': (8, -8, 10),
     }})
     batch.append({'cmd': 'configure_eevee', 'args': {
         'samples': 32,

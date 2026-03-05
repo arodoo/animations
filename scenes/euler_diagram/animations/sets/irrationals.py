@@ -43,7 +43,7 @@ _TOTAL_FRAMES = 4800
 
 def build_irrationals(
     appear_frame: int,
-    base_sz: float = 0.70,
+    base_sz: float = 0.75,
     total_frames: int = _TOTAL_FRAMES,
 ) -> List[Dict]:
     """120 irrationals, strictly sequential, pink."""
@@ -56,10 +56,10 @@ def build_irrationals(
             f'Real{i}', text,
             x, y, 'MatReal', f,
             sz=sz, bounce=_BOUNCE,
-            extrude=0.08,
+            extrude=0.015,
         )
         cmds += build_idle_bob(
             f'Real{i}', x, y, f,
-            total_frames, amplitude=0.12,
+            total_frames, amplitude=0.02,
         )
     return cmds

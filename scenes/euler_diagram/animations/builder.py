@@ -30,27 +30,27 @@ def build_euler_diagram(
     cmds += build_background()
     cmds += build_odds(
         t.odds_start,
-        base_sz=s.get('odds', {}).get('size', 0.92),
+        base_sz=s.get('odds', {}).get('size', 1.00),
         total_frames=total_frames,
     )
     cmds += build_naturals(
         t.nat_start,
-        base_sz=s.get('naturals', {}).get('size', 0.92),
+        base_sz=s.get('naturals', {}).get('size', 0.88),
         total_frames=total_frames,
     )
     cmds += build_integers(
         t.int_start,
-        base_sz=s.get('integers', {}).get('size', 0.80),
+        base_sz=s.get('integers', {}).get('size', 0.82),
         total_frames=total_frames,
     )
     cmds += build_rationals(
         t.rat_start,
-        base_sz=s.get('rationals', {}).get('size', 0.70),
+        base_sz=s.get('rationals', {}).get('size', 0.75),
         total_frames=total_frames,
     )
     cmds += build_irrationals(
         t.real_start,
-        base_sz=s.get('reals', {}).get('size', 0.70),
+        base_sz=s.get('reals', {}).get('size', 0.75),
         total_frames=total_frames,
     )
     cmds += build_labels(t, label_sz=label_size)

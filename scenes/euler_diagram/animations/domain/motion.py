@@ -11,13 +11,13 @@ def build_idle_bob(
     y: float,
     appear_frame: int,
     total_frames: int,
-    amplitude: float = 0.15,
-    period: int = 90,
+    amplitude: float = 0.02,
+    period: int = 80,
 ) -> List[Dict]:
-    """Subtle up-down oscillation after appearing."""
+    """Subtle Z-oscillation after appearing."""
     cmds: List[Dict] = []
-    step = max(period // 4, 8)
-    start = appear_frame + 30
+    step = max(period // 4, 6)
+    start = appear_frame + 20
     for f in range(start, total_frames, step):
         t = (f - start) / period
         z = amplitude * math.sin(t * math.tau)
