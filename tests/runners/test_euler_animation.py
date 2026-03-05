@@ -17,14 +17,14 @@ def test_euler_low_quality():
     result = create_euler_animation('low')
     assert result is not None
     assert len(result['results']) > 0
-    assert result['frames'] == 600
+    assert result['frames'] == 480
 
 
 def test_euler_high_quality():
     """High quality generates valid commands."""
     result = create_euler_animation('high')
     assert len(result['results']) > 0
-    assert result['frames'] == 1200
+    assert result['frames'] == 2880
 
 
 def test_euler_all_commands_succeed():

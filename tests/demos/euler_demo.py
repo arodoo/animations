@@ -14,28 +14,19 @@ from scenes.euler_diagram.animations._timing import Timing
 
 _PRESETS = {
     'low': {
-        'total_frames': 600,
+        'total_frames': 480,
         'timing': Timing(
-            ring_inner=60,
-            odds_appear=120,
-            zoom_start=200,
-            ring_outer=300,
-            outer_nums=360,
-            zoom_end=480,
-            labels=510,
+            odds_start=10,
+            nat_start=60,
+            int_start=130,
+            rat_start=210,
+            real_start=340,
+            finale=430,
         ),
     },
     'high': {
-        'total_frames': 1200,
-        'timing': Timing(
-            ring_inner=80,
-            odds_appear=160,
-            zoom_start=320,
-            ring_outer=540,
-            outer_nums=620,
-            zoom_end=900,
-            labels=940,
-        ),
+        'total_frames': 2880,
+        'timing': Timing(),   # default timing
     },
 }
 
