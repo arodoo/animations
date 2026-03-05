@@ -24,17 +24,20 @@ _NUMS = [
     '1/phi', '3^(1/3)', 'v14', 'v15', 'v17',
     'v19', 'chi', 'rho', 'eta', 'theta',
 ]
-_BASE_SZ = 0.30
+_BASE_SZ = 0.70
 _STAGGER = 3
 _BOUNCE = 1.3
 
 
-def build_irrationals(appear_frame: int) -> List[Dict]:
+def build_irrationals(
+    appear_frame: int,
+    base_sz: float = _BASE_SZ,
+) -> List[Dict]:
     """75 irrationals, stagger 3f, hot pink."""
     cmds: List[Dict] = []
     for i, text in enumerate(_NUMS):
         x, y = pos(REAL_START + i)
-        sz = sz_at(REAL_START + i, _BASE_SZ)
+        sz = sz_at(REAL_START + i, base_sz)
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
             f'Real{i}', text,

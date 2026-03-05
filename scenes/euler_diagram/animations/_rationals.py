@@ -8,7 +8,7 @@ from typing import Dict, List
 from ._helpers import text_reveal
 from ._spiral import pos, RAT_START, sz_at
 
-_BASE_SZ = 0.30
+_BASE_SZ = 0.70
 _STAGGER = 4
 _BOUNCE = 1.3
 
@@ -37,12 +37,15 @@ def _gen() -> List[str]:
 _NUMS = _gen()
 
 
-def build_rationals(appear_frame: int) -> List[Dict]:
+def build_rationals(
+    appear_frame: int,
+    base_sz: float = _BASE_SZ,
+) -> List[Dict]:
     """150 fractions, stagger 4f, orange."""
     cmds: List[Dict] = []
     for i, text in enumerate(_NUMS):
         x, y = pos(RAT_START + i)
-        sz = sz_at(RAT_START + i, _BASE_SZ)
+        sz = sz_at(RAT_START + i, base_sz)
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
             f'Rat{i}', text,

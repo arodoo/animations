@@ -8,17 +8,20 @@ from ._helpers import text_reveal
 from ._spiral import pos, NAT_START, sz_at
 
 _NUMS = list(range(2, 182, 2))   # 90 evens
-_BASE_SZ = 0.40
+_BASE_SZ = 0.92
 _STAGGER = 7
 _BOUNCE = 1.3
 
 
-def build_naturals(appear_frame: int) -> List[Dict]:
+def build_naturals(
+    appear_frame: int,
+    base_sz: float = _BASE_SZ,
+) -> List[Dict]:
     """90 even naturals, stagger 7f, teal."""
     cmds: List[Dict] = []
     for i, num in enumerate(_NUMS):
         x, y = pos(NAT_START + i)
-        sz = sz_at(NAT_START + i, _BASE_SZ)
+        sz = sz_at(NAT_START + i, base_sz)
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
             f'Nat{i}', str(num),

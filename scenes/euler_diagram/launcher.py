@@ -15,13 +15,28 @@ for m in list(sys.modules.keys()):
 from scenes.euler_diagram.scene import create_scene
 from scenes.euler_diagram.animations._timing import Timing
 
-# --- Tune act timings (frames at 24fps ≈ 2 min) ---
+# --- Spacing (1.0 = default, >1 more space, <1 less) ---
+SPIRAL_SCALE = 1.0
+
+# --- Label size ('0' and set names like 'Impares') ---
+LABEL_SIZE = 1.60
+
+# --- Per-set config: color (R,G,B), emit strength, size ---
+SETS = {
+    'odds':      {'color': (1.0, 0.85, 0.00), 'emit': 28.0, 'size': 0.92},
+    'naturals':  {'color': (0.0, 1.00, 0.85), 'emit': 14.0, 'size': 0.92},
+    'integers':  {'color': (0.55, 0.0, 1.00), 'emit': 14.0, 'size': 0.80},
+    'rationals': {'color': (1.0, 0.45, 0.00), 'emit': 14.0, 'size': 0.70},
+    'reals':     {'color': (1.0, 0.10, 0.55), 'emit': 14.0, 'size': 0.70},
+}
+
+# --- Act timings (frames at 24fps ≈ 2 min) ---
 TIMING = Timing(
-    odds_start=60,    # Act 1: 45 gold odds
-    nat_start=540,    # Act 2: 90 teal naturals
-    int_start=1200,   # Act 3: 120 violet integers
-    rat_start=1830,   # Act 4: 150 orange rationals
-    real_start=2460,  # Act 5: 75 pink irrationals
+    odds_start=60,
+    nat_start=540,
+    int_start=1200,
+    rat_start=1830,
+    real_start=2460,
     finale=2720,
 )
 
@@ -31,6 +46,9 @@ def run():
     results = create_scene(
         total_frames=2880,
         timing=TIMING,
+        spiral_scale=SPIRAL_SCALE,
+        sets=SETS,
+        label_size=LABEL_SIZE,
     )
     n = len(results['results'])
     print(f"Generated {n} commands.")

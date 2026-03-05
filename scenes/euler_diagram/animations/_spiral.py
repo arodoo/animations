@@ -4,16 +4,30 @@
 
 import math
 
-TOTAL = 480          # total numbers on spiral (3x)
-TURNS = 5.0          # full rotations (more spacing)
+TOTAL = 480
+TURNS = 5.0
 _ANGLE = TURNS * math.tau
-R_MIN = 5.8
-R_MAX = 69.0
-_B = math.log(R_MAX / R_MIN) / _ANGLE
 
-# Camera distance bounds (mirrors _camera._STAGES)
-_CAM_MIN = 28.0
-_CAM_MAX = 143.0
+_BASE_R_MIN = 5.8
+_BASE_R_MAX = 69.0
+_BASE_CAM_MIN = 28.0
+_BASE_CAM_MAX = 143.0
+
+R_MIN = _BASE_R_MIN
+R_MAX = _BASE_R_MAX
+_B = math.log(R_MAX / R_MIN) / _ANGLE
+_CAM_MIN = _BASE_CAM_MIN
+_CAM_MAX = _BASE_CAM_MAX
+
+
+def configure(scale: float = 1.0):
+    """Recompute spiral constants for the given scale."""
+    global R_MIN, R_MAX, _B, _CAM_MIN, _CAM_MAX
+    R_MIN = _BASE_R_MIN * scale
+    R_MAX = _BASE_R_MAX * scale
+    _B = math.log(R_MAX / R_MIN) / _ANGLE
+    _CAM_MIN = _BASE_CAM_MIN * scale
+    _CAM_MAX = _BASE_CAM_MAX * scale
 
 # Global start indices per set
 ODDS_START = 0    # 45 numbers: 0-44

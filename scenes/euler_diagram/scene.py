@@ -16,6 +16,9 @@ from .animations._timing import Timing
 def create_scene(
     total_frames: int = 2880,
     timing: Timing = None,
+    spiral_scale: float = 1.0,
+    sets: dict = None,
+    label_size: float = 1.60,
 ) -> Dict[str, Any]:
     """Build and dispatch the Euler Diagram animation."""
     batch = []
@@ -34,8 +37,10 @@ def create_scene(
     }})
     batch += build_euler_diagram(
         total_frames, timing=timing,
+        spiral_scale=spiral_scale,
+        sets=sets, label_size=label_size,
     )
-    batch += build_camera(total_frames)
+    batch += build_camera(total_frames, scale=spiral_scale)
     results = dispatch_batch(batch)
     return {
         'results': results,

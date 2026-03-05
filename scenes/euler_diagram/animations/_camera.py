@@ -32,7 +32,10 @@ def _interp(frame: int):
     return _STAGES[-1][1], _STAGES[-1][2]
 
 
-def build_camera(total_frames: int) -> List[Dict]:
+def build_camera(
+    total_frames: int,
+    scale: float = 1.0,
+) -> List[Dict]:
     """55°-elevation zoom-out — flat numbers readable from above."""
     cmds: List[Dict] = [
         {'cmd': 'create_camera',
@@ -48,11 +51,11 @@ def build_camera(total_frames: int) -> List[Dict]:
         dist, h = _interp(f)
         t = f / total_frames
         angle = _BASE + t * _SWEEP
-        cx = dist * math.cos(angle)
-        cy = dist * math.sin(angle)
+        cx = dist * scale * math.cos(angle)
+        cy = dist * scale * math.sin(angle)
         cmds.append({'cmd': 'move_object', 'args': {
             'name': 'SceneCamera',
-            'location': (cx, cy, h),
+            'location': (cx, cy, h * scale),
             'frame': f,
         }})
     return cmds
