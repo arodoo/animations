@@ -6,11 +6,11 @@ from typing import Dict, List
 
 
 _DEFAULTS = {
-    'odds':      {'color': (1.0, 0.85, 0.00), 'emit': 28.0},
-    'naturals':  {'color': (0.0, 1.00, 0.85), 'emit': 14.0},
-    'integers':  {'color': (0.55, 0.0, 1.00), 'emit': 14.0},
-    'rationals': {'color': (1.0, 0.45, 0.00), 'emit': 14.0},
-    'reals':     {'color': (1.0, 0.10, 0.55), 'emit': 14.0},
+    'odds':      {'color': (1.0, 0.92, 0.00), 'emit': 32.0},
+    'naturals':  {'color': (0.0, 1.00, 0.85), 'emit': 22.0},
+    'integers':  {'color': (0.3, 0.00, 1.00), 'emit': 26.0},
+    'rationals': {'color': (0.0, 0.95, 0.30), 'emit': 22.0},
+    'reals':     {'color': (1.0, 0.00, 0.60), 'emit': 26.0},
 }
 
 

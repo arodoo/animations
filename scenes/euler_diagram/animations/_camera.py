@@ -5,38 +5,45 @@
 import math
 from typing import Dict, List
 
-# (frame, horiz_dist, height) — elevation ~55°, 2.3x spiral scale
+# (frame, horiz_dist, height) — elevation ~55°, scale=1.0
 _STAGES = [
-    (0,    28,  40),  # odds inner,   elev≈55°
-    (540,  41,  59),  # naturals,     elev≈55°
-    (1200, 64,  92),  # integers,     elev≈55°
-    (1830, 97, 138),  # rationals,    elev≈55°
-    (2460, 133, 191), # irrationals,  elev≈55°
-    (2880, 143, 205), # finale hold
+    (0,    14,  20),  # odds inner,   elev≈55°
+    (540,  20,  29),  # naturals,     elev≈55°
+    (1200, 32,  46),  # integers,     elev≈55°
+    (1830, 50,  71),  # rationals,    elev≈55°
+    (2460, 70,  100), # irrationals,  elev≈55°
+    (2880, 76,  109), # finale hold
 ]
 _BASE = math.pi / 4
 _SWEEP = math.pi / 8
 
 
-def _interp(frame: int):
+def _interp(frame: int, stages: list):
     """Linear interpolation between stage keypoints."""
-    for i in range(len(_STAGES) - 1):
-        f0, d0, h0 = _STAGES[i]
-        f1, d1, h1 = _STAGES[i + 1]
+    for i in range(len(stages) - 1):
+        f0, d0, h0 = stages[i]
+        f1, d1, h1 = stages[i + 1]
         if f0 <= frame <= f1:
             t = (frame - f0) / (f1 - f0)
             return (
                 d0 + (d1 - d0) * t,
                 h0 + (h1 - h0) * t,
             )
-    return _STAGES[-1][1], _STAGES[-1][2]
+    return stages[-1][1], stages[-1][2]
 
 
 def build_camera(
     total_frames: int,
     scale: float = 1.0,
+    cam_start: tuple = None,
+    cam_end: tuple = None,
 ) -> List[Dict]:
     """55°-elevation zoom-out — flat numbers readable from above."""
+    stages = list(_STAGES)
+    if cam_start:
+        stages[0] = (_STAGES[0][0], *cam_start)
+    if cam_end:
+        stages[-1] = (_STAGES[-1][0], *cam_end)
     cmds: List[Dict] = [
         {'cmd': 'create_camera',
          'args': {'name': 'SceneCamera'}},

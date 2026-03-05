@@ -23,11 +23,11 @@ LABEL_SIZE = 1.60
 
 # --- Per-set config: color (R,G,B), emit strength, size ---
 SETS = {
-    'odds':      {'color': (1.0, 0.85, 0.00), 'emit': 28.0, 'size': 0.92},
-    'naturals':  {'color': (0.0, 1.00, 0.85), 'emit': 14.0, 'size': 0.92},
-    'integers':  {'color': (0.55, 0.0, 1.00), 'emit': 14.0, 'size': 0.80},
-    'rationals': {'color': (1.0, 0.45, 0.00), 'emit': 14.0, 'size': 0.70},
-    'reals':     {'color': (1.0, 0.10, 0.55), 'emit': 14.0, 'size': 0.70},
+    'odds':      {'color': (1.0, 0.92, 0.00), 'emit': 32.0, 'size': 0.92},
+    'naturals':  {'color': (0.0, 1.00, 0.85), 'emit': 22.0, 'size': 0.92},
+    'integers':  {'color': (0.3, 0.00, 1.00), 'emit': 26.0, 'size': 0.80},
+    'rationals': {'color': (0.0, 0.95, 0.30), 'emit': 22.0, 'size': 0.70},
+    'reals':     {'color': (1.0, 0.00, 0.60), 'emit': 26.0, 'size': 0.70},
 }
 
 # --- Act timings (frames at 24fps ≈ 2 min) ---
