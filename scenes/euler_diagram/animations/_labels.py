@@ -24,7 +24,7 @@ def _out_pos(idx: int):
     x, y = pos(idx)
     r = math.hypot(x, y)
     a = math.atan2(y, x)
-    r2 = r * 1.35
+    r2 = r * 1.75
     return r2 * math.cos(a), r2 * math.sin(a), r
 
 

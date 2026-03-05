@@ -5,14 +5,14 @@
 import math
 from typing import Dict, List
 
-# (frame, horiz_dist, height) — elevation 19-27°
+# (frame, horiz_dist, height) — elevation ~55°, 2.3x spiral scale
 _STAGES = [
-    (0,    12,  6),   # odds inner,   elev≈27°
-    (540,  18,  8),   # naturals,     elev≈24°
-    (1200, 28, 12),   # integers,     elev≈23°
-    (1830, 42, 16),   # rationals,    elev≈21°
-    (2460, 58, 20),   # irrationals,  elev≈19°
-    (2880, 62, 22),   # finale hold
+    (0,    28,  40),  # odds inner,   elev≈55°
+    (540,  41,  59),  # naturals,     elev≈55°
+    (1200, 64,  92),  # integers,     elev≈55°
+    (1830, 97, 138),  # rationals,    elev≈55°
+    (2460, 133, 191), # irrationals,  elev≈55°
+    (2880, 143, 205), # finale hold
 ]
 _BASE = math.pi / 4
 _SWEEP = math.pi / 8
@@ -33,7 +33,7 @@ def _interp(frame: int):
 
 
 def build_camera(total_frames: int) -> List[Dict]:
-    """Low-elevation zoom-out tracking spiral growth."""
+    """55°-elevation zoom-out — flat numbers readable from above."""
     cmds: List[Dict] = [
         {'cmd': 'create_camera',
          'args': {'name': 'SceneCamera'}},

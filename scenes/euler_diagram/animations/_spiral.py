@@ -7,13 +7,13 @@ import math
 TOTAL = 480          # total numbers on spiral (3x)
 TURNS = 5.0          # full rotations (more spacing)
 _ANGLE = TURNS * math.tau
-R_MIN = 2.5
-R_MAX = 30.0
+R_MIN = 5.8
+R_MAX = 69.0
 _B = math.log(R_MAX / R_MIN) / _ANGLE
 
 # Camera distance bounds (mirrors _camera._STAGES)
-_CAM_MIN = 12.0
-_CAM_MAX = 62.0
+_CAM_MIN = 28.0
+_CAM_MAX = 143.0
 
 # Global start indices per set
 ODDS_START = 0    # 45 numbers: 0-44

@@ -5,9 +5,9 @@
 import math
 from typing import Dict, List
 
-# Rx(pi/2): text stands upright (local up = world Z)
-# Rz(3pi/4): face points toward camera at azimuth pi/4
-_TEXT_ROT = (math.pi / 2, 0.0, 3 * math.pi / 4)
+# Rx(0): text lies flat on XY plane, facing up toward camera
+# Rz(pi/4): top of glyphs points toward camera azimuth pi/4
+_TEXT_ROT = (0.0, 0.0, math.pi / 4)
 
 
 def text_reveal(
@@ -26,7 +26,7 @@ def text_reveal(
         {'cmd': 'spawn_text', 'args': {
             'name': name,
             'text': text,
-            'location': (x, y, 1.0),
+            'location': (x, y, 0.0),
             'rotation': _TEXT_ROT,
             'extrude': 0.0,
             'align_x': 'CENTER',
