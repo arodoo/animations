@@ -14,7 +14,7 @@ _ANGLE = TURNS * math.tau
 
 _BASE_R_MIN = 1.5
 _BASE_R_MAX = 35.0
-_BASE_MIN_SZ = 0.12
+_BASE_MIN_SZ = 0.06
 
 R_MIN = _BASE_R_MIN
 R_MAX = _BASE_R_MAX

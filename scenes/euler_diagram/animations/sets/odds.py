@@ -1,7 +1,7 @@
 # Odd numbers — innermost ring, golden yellow.
 # All Rights Reserved Arodi Emmanuel
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from ..domain.reveal import text_reveal
 from ..domain.motion import build_idle_bob
@@ -9,17 +9,18 @@ from ..domain.spiral import pos_slot, display_sz, ODDS_START
 from ..domain.layout import slots_advance
 
 _NUMS = list(range(1, 40, 2))   # 1,3,5...39 (20 numbers)
-_STAGGER = 15   # frames between each appearance
+_STAGGER = 15
 _TOTAL_FRAMES = 2400
 
 
 def build_odds(
     appear_frame: int,
     total_frames: int = _TOTAL_FRAMES,
-) -> List[Dict]:
+    start_slot: int = ODDS_START,
+) -> Tuple[List[Dict], int]:
     """20 odd numbers, golden, strictly sequential."""
     cmds: List[Dict] = []
-    slot = ODDS_START
+    slot = start_slot
     for i, num in enumerate(_NUMS):
         x, y, _ = pos_slot(slot)
         sz = display_sz(slot)
@@ -33,4 +34,4 @@ def build_odds(
             total_frames, amplitude=sz * 0.20,
         )
         slot += slots_advance(slot, num)
-    return cmds
+    return cmds, slot

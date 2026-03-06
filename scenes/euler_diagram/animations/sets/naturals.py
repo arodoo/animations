@@ -1,7 +1,7 @@
 # Even natural numbers — second ring, teal.
 # All Rights Reserved Arodi Emmanuel
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from ..domain.reveal import text_reveal
 from ..domain.motion import build_idle_bob
@@ -16,10 +16,11 @@ _TOTAL_FRAMES = 2400
 def build_naturals(
     appear_frame: int,
     total_frames: int = _TOTAL_FRAMES,
-) -> List[Dict]:
+    start_slot: int = NAT_START,
+) -> Tuple[List[Dict], int]:
     """30 even naturals, teal, sequential."""
     cmds: List[Dict] = []
-    slot = NAT_START
+    slot = start_slot
     for i, num in enumerate(_NUMS):
         x, y, _ = pos_slot(slot)
         sz = display_sz(slot)
@@ -33,4 +34,4 @@ def build_naturals(
             total_frames, amplitude=sz * 0.18,
         )
         slot += slots_advance(slot, num)
-    return cmds
+    return cmds, slot

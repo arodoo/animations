@@ -2,7 +2,7 @@
 # All Rights Reserved Arodi Emmanuel
 
 from fractions import Fraction as _F
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from ..domain.reveal import text_reveal
 from ..domain.motion import build_idle_bob
@@ -25,9 +25,7 @@ def _gen() -> List[str]:
                 continue
             if frac not in seen:
                 seen.add(frac)
-                out.append(
-                    f'{frac.numerator}/{frac.denominator}'
-                )
+                out.append(f'{frac.numerator}/{frac.denominator}')
                 if len(out) == 30:
                     return out
     return out
@@ -39,10 +37,11 @@ _NUMS = _gen()
 def build_rationals(
     appear_frame: int,
     total_frames: int = _TOTAL_FRAMES,
-) -> List[Dict]:
+    start_slot: int = RAT_START,
+) -> Tuple[List[Dict], int]:
     """30 fractions, green, sequential."""
     cmds: List[Dict] = []
-    slot = RAT_START
+    slot = start_slot
     for i, text in enumerate(_NUMS):
         x, y, _ = pos_slot(slot)
         sz = display_sz(slot)
@@ -56,4 +55,4 @@ def build_rationals(
             total_frames, amplitude=sz * 0.18,
         )
         slot += slots_advance(slot, text)
-    return cmds
+    return cmds, slot
