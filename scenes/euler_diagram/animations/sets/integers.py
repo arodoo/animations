@@ -5,7 +5,7 @@ from typing import Dict, List
 
 from ..domain.reveal import text_reveal
 from ..domain.motion import build_idle_bob
-from ..domain.spiral import pos_slot, sz_at_slot, slot_width, INT_START
+from ..domain.spiral import pos_slot, display_sz, slot_width, INT_START
 
 _NUMS = list(range(-1, -31, -1))   # -1,-2,...-30 (30 numbers)
 _STAGGER = 15
@@ -21,7 +21,7 @@ def build_integers(
     slot = INT_START
     for i, num in enumerate(_NUMS):
         x, y, _ = pos_slot(slot)
-        sz = sz_at_slot(slot)
+        sz = display_sz(slot)
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
             f'Int{i}', str(num), x, y, 'MatInt', f,

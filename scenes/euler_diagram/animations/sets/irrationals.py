@@ -5,7 +5,7 @@ from typing import Dict, List
 
 from ..domain.reveal import text_reveal
 from ..domain.motion import build_idle_bob
-from ..domain.spiral import pos_slot, sz_at_slot, slot_width, REAL_START
+from ..domain.spiral import pos_slot, display_sz, slot_width, REAL_START
 
 _NUMS = [
     'π', 'e', '√2', '√3', '√5',
@@ -26,7 +26,7 @@ def build_irrationals(
     slot = REAL_START
     for i, text in enumerate(_NUMS):
         x, y, _ = pos_slot(slot)
-        sz = sz_at_slot(slot)
+        sz = display_sz(slot)
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
             f'Real{i}', text, x, y, 'MatReal', f,

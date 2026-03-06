@@ -7,7 +7,7 @@ from typing import Dict, List
 from ..domain.reveal import text_reveal
 from ..domain.timing import Timing
 from ..domain.spiral import (
-    pos_slot, radius_slot, sz_at_r,
+    pos_slot, radius_slot, display_sz_r,
     ODDS_START, NAT_START, INT_START, RAT_START, REAL_START,
 )
 
@@ -43,7 +43,7 @@ def build_labels(
     cmds: List[Dict] = []
     for (name, text, slot, mat, delay), s in zip(_LABEL_DEFS, starts):
         x, y, r = _outer_pos(slot)
-        sz = sz_at_r(r) * label_sz * 1.4
+        sz = display_sz_r(r) * label_sz * 1.4
         cmds += text_reveal(
             name, text, x, y, mat,
             s + delay, sz=sz, extrude=sz * 0.15,

@@ -6,14 +6,16 @@
 import math
 
 # 335 total slots, 3 turns.
-# R_MIN=4.44: arc_gap/slot=0.250 BU -> 1-digit sz=0.200 BU
-# R_MAX=35.5: arc_gap/slot=2.000 BU -> 1-digit sz=1.600 BU
+# R_MIN=1.5 BU: first number near origin.
+# R_MAX=35.0 BU: ratio ~23x across 3 turns.
+# MIN_SZ: minimum visible glyph (inner slots are small, clamp up).
 TOTAL_SLOTS = 335
 TURNS = 3.0
 _ANGLE = TURNS * math.tau
 
-_BASE_R_MIN = 4.44
-_BASE_R_MAX = 35.54
+_BASE_R_MIN = 1.5
+_BASE_R_MAX = 35.0
+MIN_SZ = 0.80
 
 R_MIN = _BASE_R_MIN
 R_MAX = _BASE_R_MAX
@@ -33,9 +35,10 @@ REAL_START = 283
 
 def configure(scale: float = 1.0):
     """Recompute spiral for given scale."""
-    global R_MIN, R_MAX, _B
+    global R_MIN, R_MAX, MIN_SZ, _B
     R_MIN = _BASE_R_MIN * scale
     R_MAX = _BASE_R_MAX * scale
+    MIN_SZ = 0.80 * scale
     _B = math.log(R_MAX / R_MIN) / _ANGLE
 
 
@@ -58,11 +61,21 @@ def radius_slot(slot: int) -> float:
 
 
 def sz_at_slot(slot: int) -> float:
-    """Glyph sz = 80% of one-slot arc gap."""
+    """Arc-based glyph size (no clamp, for geometry checks)."""
     r = radius_slot(slot)
     return r * (_ANGLE / TOTAL_SLOTS) * 0.80
 
 
 def sz_at_r(r: float) -> float:
-    """Glyph sz at explicit radius."""
+    """Arc-based glyph size at explicit radius."""
     return r * (_ANGLE / TOTAL_SLOTS) * 0.80
+
+
+def display_sz(slot: int) -> float:
+    """Visible glyph size: clamped to MIN_SZ so inner glyphs are readable."""
+    return max(sz_at_slot(slot), MIN_SZ)
+
+
+def display_sz_r(r: float) -> float:
+    """Visible glyph size at explicit radius."""
+    return max(sz_at_r(r), MIN_SZ)

@@ -9,13 +9,13 @@ from typing import Dict, List
 # (frame, horiz_dist, height) — height/dist ratio ~1.6 = top-down feel
 # Each stage frames the ring just filled by that act.
 _STAGES = [
-    (0,     7.0,  11.0),   # pre-roll: centered on r=4.44
-    (48,    7.0,  11.0),   # odds: r ~ 4.4..5.3
-    (348,  10.0,  16.0),   # naturals: r ~ 5.3..8.0
-    (798,  14.5,  23.0),   # integers: r ~ 8.0..13.0
-    (1248, 21.0,  33.0),   # rationals: r ~ 13..20
-    (1698, 31.0,  49.0),   # reals: r ~ 20..30
-    (2400, 36.0,  56.0),   # finale
+    (0,     4.0,   6.0),   # pre-roll: centered on r=1.5
+    (48,    4.0,   6.0),   # odds: r ~ 1.5..2.2
+    (348,   6.0,   9.5),   # naturals: r ~ 2.2..4.5
+    (798,   9.5,  15.0),   # integers: r ~ 4.5..9
+    (1248, 15.0,  24.0),   # rationals: r ~ 9..17
+    (1698, 24.0,  38.0),   # reals: r ~ 17..32
+    (2400, 30.0,  46.0),   # finale
 ]
 # Gentle orbit: small horizontal sweep while zooming out
 _BASE_ANGLE = math.pi / 4
