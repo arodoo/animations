@@ -38,12 +38,12 @@ SETS = {
 }
 
 TIMING = Timing(
-    odds_start=60,
-    nat_start=600,
-    int_start=1500,
+    odds_start=1,
+    nat_start=540,
+    int_start=1440,
     rat_start=2400,
-    real_start=3600,
-    finale=4600,
+    real_start=3360,
+    finale=4320,
 )
 
 

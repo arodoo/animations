@@ -32,18 +32,18 @@ def create_scene(
         ],
     })
     batch.append({'cmd': 'set_light_energy', 'args': {
-        'name': 'KeyLight', 'energy': 600.0,
+        'name': 'KeyLight', 'energy': 3000.0,
     }})
     batch.append({'cmd': 'move_object', 'args': {
         'name': 'KeyLight',
-        'location': (0, 0, 15),
+        'location': (0, 0, 60),
     }})
     batch.append({'cmd': 'set_light_energy', 'args': {
-        'name': 'FillLight', 'energy': 200.0,
+        'name': 'FillLight', 'energy': 1000.0,
     }})
     batch.append({'cmd': 'move_object', 'args': {
         'name': 'FillLight',
-        'location': (8, -8, 10),
+        'location': (40, -40, 50),
     }})
     batch.append({'cmd': 'configure_eevee', 'args': {
         'samples': 32,
