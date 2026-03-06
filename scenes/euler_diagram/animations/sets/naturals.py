@@ -5,7 +5,8 @@ from typing import Dict, List
 
 from ..domain.reveal import text_reveal
 from ..domain.motion import build_idle_bob
-from ..domain.spiral import pos_slot, display_sz, slot_width, NAT_START
+from ..domain.spiral import pos_slot, display_sz, NAT_START
+from ..domain.layout import slots_advance
 
 _NUMS = list(range(2, 62, 2))   # 2,4,6...60 (30 numbers)
 _STAGGER = 15
@@ -31,5 +32,5 @@ def build_naturals(
             f'Nat{i}', x, y, f,
             total_frames, amplitude=sz * 0.18,
         )
-        slot += slot_width(num)
+        slot += slots_advance(slot, num)
     return cmds

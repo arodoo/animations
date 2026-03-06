@@ -6,7 +6,8 @@ from typing import Dict, List
 
 from ..domain.reveal import text_reveal
 from ..domain.motion import build_idle_bob
-from ..domain.spiral import pos_slot, display_sz, slot_width, RAT_START
+from ..domain.spiral import pos_slot, display_sz, RAT_START
+from ..domain.layout import slots_advance
 
 _STAGGER = 15
 _TOTAL_FRAMES = 2400
@@ -54,5 +55,5 @@ def build_rationals(
             f'Rat{i}', x, y, f,
             total_frames, amplitude=sz * 0.18,
         )
-        slot += slot_width(text)
+        slot += slots_advance(slot, text)
     return cmds

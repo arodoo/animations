@@ -5,7 +5,8 @@ from typing import Dict, List
 
 from ..domain.reveal import text_reveal
 from ..domain.motion import build_idle_bob
-from ..domain.spiral import pos_slot, display_sz, slot_width, REAL_START
+from ..domain.spiral import pos_slot, display_sz, REAL_START
+from ..domain.layout import slots_advance
 
 _NUMS = [
     'π', 'e', '√2', '√3', '√5',
@@ -36,5 +37,5 @@ def build_irrationals(
             f'Real{i}', x, y, f,
             total_frames, amplitude=sz * 0.18,
         )
-        slot += slot_width(text)
+        slot += slots_advance(slot, text)
     return cmds

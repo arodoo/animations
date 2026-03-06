@@ -12,12 +12,13 @@ from ..domain.spiral import (
 )
 
 # (name, label_text, mid_slot, material, delay_frames_after_set_start)
+# mid_slots recalibrated for TOTAL_SLOTS=700 size-aware packing.
 _LABEL_DEFS = [
-    ('LblOdds', 'IMPARES',    12, 'MatOdds',  160),
-    ('LblNat',  'NATURALES',  65, 'MatNat',   240),
-    ('LblInt',  'ENTEROS',   131, 'MatInt',   240),
-    ('LblRat',  'RACIONALES', 222, 'MatRat',  240),
-    ('LblReal', 'REALES',    293, 'MatReal',  180),
+    ('LblOdds', 'IMPARES',    70,  'MatOdds',  160),
+    ('LblNat',  'NATURALES',  210, 'MatNat',   240),
+    ('LblInt',  'ENTEROS',   333,  'MatInt',   240),
+    ('LblRat',  'RACIONALES', 490, 'MatRat',  240),
+    ('LblReal', 'REALES',    600,  'MatReal',  180),
 ]
 
 

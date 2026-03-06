@@ -6,20 +6,25 @@ import math
 from typing import Dict, List
 
 # Stages aligned to timing.py act starts.
-# (frame, horiz_dist, height) — height/dist ratio ~1.6 = top-down feel
-# Each stage frames the ring just filled by that act.
+# Distances are 40% larger than visual minimum to always lead the spiral.
+# (frame, horiz_dist, height)
 _STAGES = [
-    (0,     4.0,   6.0),   # pre-roll: centered on r=1.5
-    (48,    4.0,   6.0),   # odds: r ~ 1.5..2.2
-    (348,   6.0,   9.5),   # naturals: r ~ 2.2..4.5
-    (798,   9.5,  15.0),   # integers: r ~ 4.5..9
-    (1248, 15.0,  24.0),   # rationals: r ~ 9..17
-    (1698, 24.0,  38.0),   # reals: r ~ 17..32
-    (2400, 30.0,  46.0),   # finale
+    (0,     5.6,   8.4),   # pre-roll
+    (48,    5.6,   8.4),   # odds
+    (348,   8.4,  13.3),   # naturals
+    (798,  13.3,  21.0),   # integers
+    (1248, 21.0,  33.6),   # rationals
+    (1698, 33.6,  53.2),   # reals
+    (2400, 42.0,  64.4),   # finale
 ]
 # Gentle orbit: small horizontal sweep while zooming out
 _BASE_ANGLE = math.pi / 4
 _SWEEP = math.pi / 10
+
+
+def _exp_lerp(a: float, b: float, t: float) -> float:
+    """Exponential interpolation — matches logarithmic spiral growth."""
+    return math.exp(math.log(a) * (1.0 - t) + math.log(b) * t)
 
 
 def _interp(frame: int):
@@ -28,7 +33,7 @@ def _interp(frame: int):
         f1, d1, h1 = _STAGES[i + 1]
         if f0 <= frame <= f1:
             t = (frame - f0) / (f1 - f0)
-            return d0 + (d1 - d0) * t, h0 + (h1 - h0) * t
+            return _exp_lerp(d0, d1, t), _exp_lerp(h0, h1, t)
     return _STAGES[-1][1], _STAGES[-1][2]
 
 

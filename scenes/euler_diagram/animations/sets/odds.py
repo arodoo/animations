@@ -5,7 +5,8 @@ from typing import Dict, List
 
 from ..domain.reveal import text_reveal
 from ..domain.motion import build_idle_bob
-from ..domain.spiral import pos_slot, display_sz, slot_width, ODDS_START
+from ..domain.spiral import pos_slot, display_sz, ODDS_START
+from ..domain.layout import slots_advance
 
 _NUMS = list(range(1, 40, 2))   # 1,3,5...39 (20 numbers)
 _STAGGER = 15   # frames between each appearance
@@ -31,5 +32,5 @@ def build_odds(
             f'Odd{i}', x, y, f,
             total_frames, amplitude=sz * 0.20,
         )
-        slot += slot_width(num)
+        slot += slots_advance(slot, num)
     return cmds
