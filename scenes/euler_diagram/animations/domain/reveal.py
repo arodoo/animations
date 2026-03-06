@@ -3,8 +3,8 @@
 
 from typing import Dict, List
 
-# Rotation: flat on XY, readable top-down (pi/2 on X axis)
-_TEXT_ROT = (1.5708, 0.0, 0.0)
+# Rotation: flat on XY, face pointing +Z (readable from top-down camera)
+_TEXT_ROT = (0.0, 0.0, 0.0)
 _REVEAL_FRAMES = 12
 
 

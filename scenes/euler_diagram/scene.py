@@ -29,6 +29,7 @@ def create_scene(
         'lights': [
             {'name': 'KeyLight',  'type': 'POINT'},
             {'name': 'FillLight', 'type': 'POINT'},
+            {'name': 'TopLight',  'type': 'POINT'},
         ],
     })
     batch.append({'cmd': 'set_light_energy', 'args': {
@@ -42,6 +43,12 @@ def create_scene(
     }})
     batch.append({'cmd': 'move_object', 'args': {
         'name': 'FillLight', 'location': (20, -20, 45),
+    }})
+    batch.append({'cmd': 'set_light_energy', 'args': {
+        'name': 'TopLight', 'energy': 5000.0,
+    }})
+    batch.append({'cmd': 'move_object', 'args': {
+        'name': 'TopLight', 'location': (0, 0, 25),
     }})
     batch.append({'cmd': 'configure_eevee', 'args': {
         'samples': 32, 'width': 1920, 'height': 1080,
