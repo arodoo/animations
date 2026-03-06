@@ -1,8 +1,12 @@
-# Idle Z-oscillation for number liveliness.
+# Float bob: Z oscillation simulating hovering over a flat surface.
 # All Rights Reserved Arodi Emmanuel
 
 import math
 from typing import Dict, List
+
+# Bob height proportional to text size (passed from caller)
+_PERIOD = 60   # frames per full cycle (~2.5s at 24fps)
+_STEP   = 10   # keyframe every 10 frames
 
 
 def build_idle_bob(
@@ -11,15 +15,13 @@ def build_idle_bob(
     y: float,
     appear_frame: int,
     total_frames: int,
-    amplitude: float = 0.02,
-    period: int = 80,
+    amplitude: float = 0.08,
 ) -> List[Dict]:
-    """Subtle Z-oscillation after appearing."""
+    """Sinusoidal Z float — text hovers like paper in breeze."""
     cmds: List[Dict] = []
-    step = max(period // 4, 6)
-    start = appear_frame + 20
-    for f in range(start, total_frames, step):
-        t = (f - start) / period
+    start = appear_frame + _PERIOD
+    for f in range(start, total_frames, _STEP):
+        t = (f - start) / _PERIOD
         z = amplitude * math.sin(t * math.tau)
         cmds.append({'cmd': 'move_object', 'args': {
             'name': name,

@@ -1,4 +1,4 @@
-# Labels at set midpoints and zero at origin.
+# Set name labels at midpoint of each set, same style as numbers.
 # All Rights Reserved Arodi Emmanuel
 
 import math
@@ -6,49 +6,51 @@ from typing import Dict, List
 
 from ..domain.reveal import text_reveal
 from ..domain.timing import Timing
-from ..domain.spiral import pos, sz_at_r
+from ..domain.spiral import (
+    pos_slot, radius_slot, sz_at_r,
+    ODDS_START, NAT_START, INT_START, RAT_START, REAL_START,
+)
 
+# (name, label_text, mid_slot, material, delay_frames_after_set_start)
 _LABEL_DEFS = [
-    ('LblOdds', 'Impares',    30, 'MatOdds', 180),
-    ('LblNat',  'Naturales', 135, 'MatNat',  250),
-    ('LblInt',  'Enteros',   300, 'MatInt',  240),
-    ('LblRat', 'Racionales', 495, 'MatRat',  250),
-    ('LblReal', 'Reales',    660, 'MatReal', 120),
+    ('LblOdds', 'IMPARES',    12, 'MatOdds',  160),
+    ('LblNat',  'NATURALES',  65, 'MatNat',   240),
+    ('LblInt',  'ENTEROS',   131, 'MatInt',   240),
+    ('LblRat',  'RACIONALES', 222, 'MatRat',  240),
+    ('LblReal', 'REALES',    293, 'MatReal',  180),
 ]
 
 
-def _out_pos(idx: int):
-    """Outward label position."""
-    x, y = pos(idx)
+def _outer_pos(slot: int):
+    """Position 60% further out than the slot, same angle."""
+    x, y, _ = pos_slot(slot)
     r = math.hypot(x, y)
     a = math.atan2(y, x)
-    r2 = r * 1.50
+    r2 = r * 1.60
     return r2 * math.cos(a), r2 * math.sin(a), r
 
 
 def build_labels(
     t: Timing,
-    label_sz: float = 1.10,
+    label_sz: float = 1.0,
 ) -> List[Dict]:
-    """Labels at set midpoints + '0' at center."""
+    """One label per set at midpoint + '0' at origin."""
     starts = [
         t.odds_start, t.nat_start,
         t.int_start, t.rat_start,
         t.real_start,
     ]
     cmds: List[Dict] = []
-    for entry, s in zip(_LABEL_DEFS, starts):
-        name, text, idx, mat, delay = entry
-        x, y, r = _out_pos(idx)
-        lbl_sz = sz_at_r(r, label_sz)
-        f = s + delay
+    for (name, text, slot, mat, delay), s in zip(_LABEL_DEFS, starts):
+        x, y, r = _outer_pos(slot)
+        sz = sz_at_r(r) * label_sz * 1.4
         cmds += text_reveal(
-            name, text, x, y, mat, f,
-            sz=lbl_sz, extrude=0.015,
+            name, text, x, y, mat,
+            s + delay, sz=sz, extrude=sz * 0.15,
         )
+    # '0' at origin appears with first odds number
     cmds += text_reveal(
         'Zero', '0', 0.0, 0.0, 'MatOdds',
-        t.odds_start, sz=0.18,
-        bounce=1.5, extrude=0.01,
+        t.odds_start, sz=0.22, extrude=0.04,
     )
     return cmds

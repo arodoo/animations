@@ -17,7 +17,7 @@ def create_scene(
     total_frames: int = 2400,
     timing: Timing = None,
     spiral_scale: float = 1.0,
-    sets: dict = None,
+    emit_overrides: dict = None,
     label_size: float = 1.0,
 ) -> Dict[str, Any]:
     """Build and dispatch the Euler Diagram animation."""
@@ -27,40 +27,32 @@ def create_scene(
         'world_color': (0.008, 0.009, 0.02),
         'grid': False,
         'lights': [
-            {'name': 'KeyLight', 'type': 'POINT'},
+            {'name': 'KeyLight',  'type': 'POINT'},
             {'name': 'FillLight', 'type': 'POINT'},
         ],
     })
     batch.append({'cmd': 'set_light_energy', 'args': {
-        'name': 'KeyLight', 'energy': 800.0,
+        'name': 'KeyLight', 'energy': 2000.0,
     }})
     batch.append({'cmd': 'move_object', 'args': {
-        'name': 'KeyLight',
-        'location': (0, 0, 20),
+        'name': 'KeyLight', 'location': (0, 0, 60),
     }})
     batch.append({'cmd': 'set_light_energy', 'args': {
-        'name': 'FillLight', 'energy': 300.0,
+        'name': 'FillLight', 'energy': 700.0,
     }})
     batch.append({'cmd': 'move_object', 'args': {
-        'name': 'FillLight',
-        'location': (12, -12, 15),
+        'name': 'FillLight', 'location': (20, -20, 45),
     }})
     batch.append({'cmd': 'configure_eevee', 'args': {
-        'samples': 32,
-        'width': 1920,
-        'height': 1080,
+        'samples': 32, 'width': 1920, 'height': 1080,
     }})
     batch += build_euler_diagram(
-        total_frames, timing=timing,
+        total_frames,
+        timing=timing,
         spiral_scale=spiral_scale,
-        sets=sets, label_size=label_size,
+        emit_overrides=emit_overrides,
+        label_size=label_size,
     )
-    batch += build_camera(
-        total_frames, scale=spiral_scale,
-    )
+    batch += build_camera(total_frames, scale=spiral_scale)
     results = dispatch_batch(batch)
-    return {
-        'results': results,
-        'frames': total_frames,
-        'status': 'OK',
-    }
+    return {'results': results, 'frames': total_frames, 'status': 'OK'}

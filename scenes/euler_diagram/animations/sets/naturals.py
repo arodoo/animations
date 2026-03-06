@@ -1,37 +1,35 @@
-# Even naturals on the nautilus spiral.
+# Even natural numbers — second ring, teal.
 # All Rights Reserved Arodi Emmanuel
 
 from typing import Dict, List
 
-from ..domain.reveal import text_reveal, reveal_duration
-from ..domain.spiral import pos, NAT_START, sz_at
+from ..domain.reveal import text_reveal
 from ..domain.motion import build_idle_bob
+from ..domain.spiral import pos_slot, sz_at_slot, slot_width, NAT_START
 
-_NUMS = list(range(2, 62, 2))   # 30 even naturals: 2,4,6...60
+_NUMS = list(range(2, 62, 2))   # 2,4,6...60 (30 numbers)
 _STAGGER = 15
-_BOUNCE = 1.3
 _TOTAL_FRAMES = 2400
 
 
 def build_naturals(
     appear_frame: int,
-    base_sz: float = 1.0,
     total_frames: int = _TOTAL_FRAMES,
 ) -> List[Dict]:
-    """30 even naturals, sequential, teal."""
+    """30 even naturals, teal, sequential."""
     cmds: List[Dict] = []
+    slot = NAT_START
     for i, num in enumerate(_NUMS):
-        x, y = pos(NAT_START + i)
-        sz = sz_at(NAT_START + i, base_sz)
+        x, y, _ = pos_slot(slot)
+        sz = sz_at_slot(slot)
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
-            f'Nat{i}', str(num),
-            x, y, 'MatNat', f,
-            sz=sz, bounce=_BOUNCE,
-            extrude=0.012,
+            f'Nat{i}', str(num), x, y, 'MatNat', f,
+            sz=sz, extrude=sz * 0.18, bounce=1.3,
         )
         cmds += build_idle_bob(
             f'Nat{i}', x, y, f,
-            total_frames, amplitude=0.02,
+            total_frames, amplitude=sz * 0.18,
         )
+        slot += slot_width(num)
     return cmds
