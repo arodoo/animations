@@ -48,7 +48,7 @@ def build_labels(
         )
     cmds += text_reveal(
         'Zero', '0', 0.0, 0.0, 'MatOdds',
-        t.odds_start, sz=0.35,
-        bounce=1.5, extrude=0.02,
+        t.odds_start, sz=0.18,
+        bounce=1.5, extrude=0.01,
     )
     return cmds

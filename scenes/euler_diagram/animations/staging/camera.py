@@ -1,21 +1,22 @@
-# Top-down zoom-out matching spiral R_MIN=3.5..R_MAX=18.
+# Top-down zoom-out — coordinated with 2400-frame timing.
 # All Rights Reserved Arodi Emmanuel
 
 import math
 from typing import Dict, List
 
-# (frame, horiz_dist, height)
-# At each stage the camera views the current act's ring.
+# Stages align with act starts from timing.py
+# (frame, horiz_dist, height) — h/dist ratio ~1.6 keeps top-down feel
 _STAGES = [
-    (0,     4.5,  6.5),  # odds: r~3.5..4
-    (600,   7,   10),    # naturals: r~4..6
-    (1500, 11,   15),    # integers: r~6..10
-    (2400, 15,   21),    # rationals: r~10..14
-    (3600, 20,   27),    # irrationals: r~14..18
-    (4800, 23,   31),    # finale
+    (0,    3.5,  5.5),   # pre-roll: close on origin
+    (48,   3.5,  5.5),   # odds: r ~ 2.3..3.2
+    (348,  5.5,  8.5),   # naturals: r ~ 3.2..5.0
+    (798,  7.5, 12.0),   # integers: r ~ 5.0..7.2
+    (1248, 10.5, 16.5),  # rationals: r ~ 7.2..9.5
+    (1698, 14.0, 22.0),  # reals: r ~ 9.5..11.5
+    (2400, 16.0, 25.0),  # finale
 ]
 _BASE = math.pi / 4
-_SWEEP = math.pi / 6
+_SWEEP = math.pi / 8
 
 
 def _interp(frame: int, stages: list):

@@ -7,18 +7,18 @@ from ..domain.reveal import text_reveal, reveal_duration
 from ..domain.spiral import pos, INT_START, sz_at
 from ..domain.motion import build_idle_bob
 
-_NUMS = list(range(-1, -181, -1))
-_STAGGER = reveal_duration()
+_NUMS = list(range(-1, -31, -1))   # 30 negatives: -1,-2,...-30
+_STAGGER = 15
 _BOUNCE = 1.3
-_TOTAL_FRAMES = 4800
+_TOTAL_FRAMES = 2400
 
 
 def build_integers(
     appear_frame: int,
-    base_sz: float = 0.82,
+    base_sz: float = 1.0,
     total_frames: int = _TOTAL_FRAMES,
 ) -> List[Dict]:
-    """180 negatives, strictly sequential, violet."""
+    """30 negative integers, sequential, violet."""
     cmds: List[Dict] = []
     for i, num in enumerate(_NUMS):
         x, y = pos(INT_START + i)
@@ -28,7 +28,7 @@ def build_integers(
             f'Int{i}', str(num),
             x, y, 'MatInt', f,
             sz=sz, bounce=_BOUNCE,
-            extrude=0.015,
+            extrude=0.012,
         )
         cmds += build_idle_bob(
             f'Int{i}', x, y, f,

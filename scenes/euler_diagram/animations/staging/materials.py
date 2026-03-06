@@ -4,11 +4,11 @@
 from typing import Dict, List
 
 _DEFAULTS = {
-    'odds':     {'color': (1.0, 0.95, 0.15), 'emit': 48.0},
-    'naturals': {'color': (0.1, 1.00, 0.95), 'emit': 30.0},
-    'integers': {'color': (0.6, 0.30, 1.00), 'emit': 34.0},
-    'rationals': {'color': (0.2, 1.00, 0.40), 'emit': 30.0},
-    'reals':    {'color': (1.0, 0.20, 0.70), 'emit': 34.0},
+    'odds':      {'color': (1.0,  0.92, 0.10), 'emit': 5.0},
+    'naturals':  {'color': (0.10, 1.00, 0.85), 'emit': 4.0},
+    'integers':  {'color': (0.55, 0.25, 1.00), 'emit': 4.5},
+    'rationals': {'color': (0.15, 1.00, 0.35), 'emit': 4.0},
+    'reals':     {'color': (1.0,  0.15, 0.60), 'emit': 4.5},
 }
 
 

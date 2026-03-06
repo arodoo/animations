@@ -14,11 +14,11 @@ from .animations.domain.timing import Timing
 
 
 def create_scene(
-    total_frames: int = 4800,
+    total_frames: int = 2400,
     timing: Timing = None,
     spiral_scale: float = 1.0,
     sets: dict = None,
-    label_size: float = 1.10,
+    label_size: float = 1.0,
 ) -> Dict[str, Any]:
     """Build and dispatch the Euler Diagram animation."""
     batch = []
@@ -32,18 +32,18 @@ def create_scene(
         ],
     })
     batch.append({'cmd': 'set_light_energy', 'args': {
-        'name': 'KeyLight', 'energy': 3000.0,
+        'name': 'KeyLight', 'energy': 800.0,
     }})
     batch.append({'cmd': 'move_object', 'args': {
         'name': 'KeyLight',
-        'location': (0, 0, 60),
+        'location': (0, 0, 20),
     }})
     batch.append({'cmd': 'set_light_energy', 'args': {
-        'name': 'FillLight', 'energy': 1000.0,
+        'name': 'FillLight', 'energy': 300.0,
     }})
     batch.append({'cmd': 'move_object', 'args': {
         'name': 'FillLight',
-        'location': (40, -40, 50),
+        'location': (12, -12, 15),
     }})
     batch.append({'cmd': 'configure_eevee', 'args': {
         'samples': 32,

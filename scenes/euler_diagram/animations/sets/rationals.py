@@ -8,17 +8,17 @@ from ..domain.reveal import text_reveal, reveal_duration
 from ..domain.spiral import pos, RAT_START, sz_at
 from ..domain.motion import build_idle_bob
 
-_STAGGER = reveal_duration()
+_STAGGER = 15
 _BOUNCE = 1.3
-_TOTAL_FRAMES = 4800
-_COUNT = 210
+_TOTAL_FRAMES = 2400
+_COUNT = 30
 
 
 def _gen() -> List[str]:
-    """210 unique reduced fractions."""
+    """30 unique reduced fractions, simple denominators first."""
     seen, out = set(), []
-    for d in range(2, 80):
-        for n in range(1, d * 3 + 1):
+    for d in range(2, 20):
+        for n in range(1, d * 2 + 1):
             if n == d:
                 continue
             frac = _F(n, d)
@@ -40,10 +40,10 @@ _NUMS = _gen()
 
 def build_rationals(
     appear_frame: int,
-    base_sz: float = 0.75,
+    base_sz: float = 1.0,
     total_frames: int = _TOTAL_FRAMES,
 ) -> List[Dict]:
-    """210 fractions, strictly sequential, green."""
+    """30 fractions, sequential, green."""
     cmds: List[Dict] = []
     for i, text in enumerate(_NUMS):
         x, y = pos(RAT_START + i)
@@ -53,7 +53,7 @@ def build_rationals(
             f'Rat{i}', text,
             x, y, 'MatRat', f,
             sz=sz, bounce=_BOUNCE,
-            extrude=0.015,
+            extrude=0.012,
         )
         cmds += build_idle_bob(
             f'Rat{i}', x, y, f,
