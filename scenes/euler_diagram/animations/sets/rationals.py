@@ -7,16 +7,16 @@ from typing import Dict, List, Tuple
 from ..domain.reveal import text_reveal
 from ..domain.motion import build_idle_bob
 from ..domain.spiral import pos_slot, display_sz, RAT_START
-from ..domain.layout import slots_advance
+from ..domain.layout import slots_advance, _GROWTH_STEP
 
-_STAGGER = 15
+_STAGGER = 8
 _TOTAL_FRAMES = 2400
 
 
 def _gen() -> List[str]:
-    """30 reduced fractions, simple denominators first."""
+    """60 reduced fractions, simple denominators first."""
     seen, out = set(), []
-    for d in range(2, 20):
+    for d in range(2, 30):
         for n in range(1, d * 2 + 1):
             if n == d:
                 continue
@@ -26,7 +26,7 @@ def _gen() -> List[str]:
             if frac not in seen:
                 seen.add(frac)
                 out.append(f'{frac.numerator}/{frac.denominator}')
-                if len(out) == 30:
+                if len(out) == 60:
                     return out
     return out
 
@@ -38,13 +38,15 @@ def build_rationals(
     appear_frame: int,
     total_frames: int = _TOTAL_FRAMES,
     start_slot: int = RAT_START,
-) -> Tuple[List[Dict], int]:
-    """30 fractions, green, sequential."""
+    start_index: int = 0,
+) -> Tuple[List[Dict], int, int]:
+    """60 fractions, green, sequential."""
     cmds: List[Dict] = []
     slot = start_slot
     for i, text in enumerate(_NUMS):
         x, y, _ = pos_slot(slot)
-        sz = display_sz(slot)
+        growth = 1.0 + (start_index + i) * _GROWTH_STEP
+        sz = display_sz(slot) * growth
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
             f'Rat{i}', text, x, y, 'MatRat', f,
@@ -55,4 +57,4 @@ def build_rationals(
             total_frames, amplitude=sz * 0.18,
         )
         slot += slots_advance(slot, text)
-    return cmds, slot
+    return cmds, slot, start_index + len(_NUMS)

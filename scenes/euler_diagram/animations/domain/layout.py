@@ -2,9 +2,10 @@
 # All Rights Reserved Arodi Emmanuel
 
 import math
-from .spiral import radius_slot, display_sz, TOTAL_SLOTS, _ANGLE
+from .spiral import radius_slot, sz_at_slot, TOTAL_SLOTS, _ANGLE
 
-_GAP = 1.4   # spacing multiplier between adjacent numbers
+_GAP = 1.4        # arc spacing multiplier
+_GROWTH_STEP = 0.003   # size growth per global number index
 
 
 def slot_width(text) -> int:
@@ -15,10 +16,11 @@ def slot_width(text) -> int:
 def slots_advance(slot: int, text) -> int:
     """Slots to advance after placing text.
 
-    Computes arc space the text physically occupies and converts
-    to slot count, so numbers never overlap regardless of MIN_SZ.
+    Uses unclamped arc size so inner-ring density stays compact
+    while outer rings space naturally. Display size (MIN_SZ) and
+    growth factor do not affect physical slot spacing.
     """
     chars = slot_width(text)
     arc = radius_slot(slot) * (_ANGLE / TOTAL_SLOTS)
-    sz = display_sz(slot)
+    sz = sz_at_slot(slot)   # unclamped: sz/arc = 0.80 always
     return max(chars, math.ceil(chars * sz / arc * _GAP))

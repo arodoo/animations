@@ -8,13 +8,13 @@ import math
 # R_MIN=1.5 BU: first number near origin.
 # R_MAX=35.0 BU: ratio ~23x across 3 turns.
 # MIN_SZ: absolute physical size — does NOT scale with spiral.
-TOTAL_SLOTS = 700
+TOTAL_SLOTS = 1000
 TURNS = 3.0
 _ANGLE = TURNS * math.tau
 
 _BASE_R_MIN = 1.5
 _BASE_R_MAX = 35.0
-_BASE_MIN_SZ = 0.06
+_BASE_MIN_SZ = 0.20
 
 R_MIN = _BASE_R_MIN
 R_MAX = _BASE_R_MAX
