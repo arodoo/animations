@@ -29,7 +29,7 @@ def build_odds(
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
             f'Odd{i}', str(num), x, y, 'MatOdds', f,
-            sz=sz, extrude=sz * 0.18, bounce=1.4,
+            sz=sz, extrude=sz * 0.18,
         )
         cmds += build_idle_bob(
             f'Odd{i}', x, y, f,

@@ -50,7 +50,7 @@ def build_rationals(
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
             f'Rat{i}', text, x, y, 'MatRat', f,
-            sz=sz, extrude=sz * 0.18, bounce=1.3,
+            sz=sz, extrude=sz * 0.18,
         )
         cmds += build_idle_bob(
             f'Rat{i}', x, y, f,

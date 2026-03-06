@@ -17,14 +17,11 @@ def text_reveal(
     frame: int,
     sz: float,
     extrude: float = 0.04,
-    bounce: float = 1.35,
 ) -> List[Dict]:
-    """Spawn text flat on XY with bounce scale-in.
+    """Spawn text flat on XY with linear scale-in (0 -> sz).
 
-    scale goes 0 -> sz*bounce -> sz over _REVEAL_FRAMES.
     Starts invisible (scale=0 at frame 1).
     """
-    ov = sz * bounce
     return [
         {'cmd': 'spawn_text', 'args': {
             'name': name,
@@ -41,9 +38,6 @@ def text_reveal(
         }},
         {'cmd': 'scale_object', 'args': {
             'name': name, 'scale': (0, 0, 0), 'frame': 1,
-        }},
-        {'cmd': 'scale_object', 'args': {
-            'name': name, 'scale': (ov, ov, ov), 'frame': frame,
         }},
         {'cmd': 'scale_object', 'args': {
             'name': name, 'scale': (sz, sz, sz),

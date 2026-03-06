@@ -9,15 +9,15 @@ from ..domain.timing import Timing
 from ..domain.spiral import display_sz_r
 
 # Pyramid column at x=0: IMPARES(top/small) → REALES(bottom/large).
-# y positions guarantee no overlap given the _SZ_MULT-driven heights.
-# Gaps verified: min 1.3 BU clearance between adjacent labels.
+# All y verified no-overlap: gaps > 1.2 BU between adjacent labels.
+# IMPARES delay=0 → appears at odds_start (frame ~48), always in camera.
 # (name, text, x, y, material, delay_after_set, sz_multiplier)
 _LABEL_DEFS = [
-    ('LblOdds', 'IMPARES',    0.0,   5.0, 'MatOdds',  160, 1.0),
-    ('LblNat',  'NATURALES',  0.0,   2.0, 'MatNat',   240, 1.3),
-    ('LblInt',  'ENTEROS',    0.0,  -2.0, 'MatInt',   240, 1.7),
+    ('LblOdds', 'IMPARES',    0.0,   1.2, 'MatOdds',    0, 1.0),
+    ('LblNat',  'NATURALES',  0.0,  -1.0, 'MatNat',   240, 1.3),
+    ('LblInt',  'ENTEROS',    0.0,  -3.5, 'MatInt',   240, 1.7),
     ('LblRat',  'RACIONALES', 0.0,  -7.0, 'MatRat',   240, 2.2),
-    ('LblReal', 'REALES',     0.0, -15.0, 'MatReal',  180, 3.0),
+    ('LblReal', 'REALES',     0.0, -13.0, 'MatReal',  180, 3.0),
 ]
 
 

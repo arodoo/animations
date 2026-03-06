@@ -29,7 +29,7 @@ def build_integers(
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
             f'Int{i}', str(num), x, y, 'MatInt', f,
-            sz=sz, extrude=sz * 0.18, bounce=1.3,
+            sz=sz, extrude=sz * 0.18,
         )
         cmds += build_idle_bob(
             f'Int{i}', x, y, f,

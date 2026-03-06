@@ -40,7 +40,7 @@ def build_irrationals(
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
             f'Real{i}', text, x, y, 'MatReal', f,
-            sz=sz, extrude=sz * 0.18, bounce=1.3,
+            sz=sz, extrude=sz * 0.18,
         )
         cmds += build_idle_bob(
             f'Real{i}', x, y, f,

@@ -29,7 +29,7 @@ def build_naturals(
         f = appear_frame + i * _STAGGER
         cmds += text_reveal(
             f'Nat{i}', str(num), x, y, 'MatNat', f,
-            sz=sz, extrude=sz * 0.18, bounce=1.3,
+            sz=sz, extrude=sz * 0.18,
         )
         cmds += build_idle_bob(
             f'Nat{i}', x, y, f,
