@@ -8,3 +8,4 @@ from . import hierarchy
 from . import object_mgmt
 from . import object_locks
 from . import visibility
+from . import keyframe_visibility

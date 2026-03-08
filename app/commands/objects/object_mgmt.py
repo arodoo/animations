@@ -53,15 +53,15 @@ def rename_object(args: Dict[str, Any]) -> DispatchResult:
 
 @register_command('clear_scene')
 def clear_scene(args: Dict[str, Any]) -> DispatchResult:
-    """Delete all objects in the scene (clears Blender's default cube, etc.)."""
+    """Delete all objects and materials."""
     if is_mock():
         data.objects._objects.clear()
         context.active_object = None
     else:
-        # In Blender: remove every object from bpy.data so it disappears from
-        # the scene. do_unlink=True also removes it from all collections.
         for obj in list(data.objects):
             data.objects.remove(obj, do_unlink=True)
+        for mat in list(data.materials):
+            data.materials.remove(mat)
 
     return DispatchResult.ok({}, command='clear_scene')
 

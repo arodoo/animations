@@ -1,6 +1,6 @@
 # File: scenes/missile_storm/launcher.py
 # Paste in Blender > Scripting > Run Script.
-# Adjust TIMING below. Z > Material Preview, SPACE.
+# Z > Material Preview, SPACE to play.
 # All Rights Reserved Arodi Emmanuel
 
 import sys
@@ -9,18 +9,12 @@ PROJECT_PATH = r"d:\zProyectos\01Python\animations"
 if PROJECT_PATH not in sys.path:
     sys.path.insert(0, PROJECT_PATH)
 
-# -- Timing configuration -------------------
+# -- Timing (2 min at 24 fps) ---------------
 from scenes.missile_storm.animations.domain.timing import Timing
 
 TIMING = Timing(
     flight_start=1,
-    flight_end=480,
-    strike_frame=481,
-    strike_explode=500,
-    pullback_start=500,
-    barrage_start=600,
-    barrage_end=1080,
-    finale_end=1200,
+    flight_end=2880,
 )
 CAM_STEP = 4
 
@@ -48,8 +42,13 @@ def _setup_viewport() -> None:
                 if a.type != 'VIEW_3D':
                     continue
                 for s in a.spaces:
-                    if s.type == 'VIEW_3D':
-                        s.shading.type = 'MATERIAL'
+                    if s.type != 'VIEW_3D':
+                        continue
+                    s.shading.type = 'MATERIAL'
+                    r = s.region_3d
+                    if r:
+                        r.view_perspective = 'CAMERA'
+        bpy.context.scene.frame_set(1)
         bpy.ops.screen.animation_play()
     except Exception:
         pass
@@ -57,7 +56,7 @@ def _setup_viewport() -> None:
 
 if __name__ == '__main__':
     print("=" * 50)
-    print("  MISSILE STORM")
+    print("  BUTTERFLY MEADOW")
     print("=" * 50)
     result = create_scene(TIMING, CAM_STEP)
     ok_n = sum(
@@ -71,7 +70,10 @@ if __name__ == '__main__':
         if not r.success
     ]
     if failed:
-        for r in failed[:10]:
-            print(f"  [FAIL] {r.command_name}")
+        for r in failed[:20]:
+            print(
+                f"  [FAIL] {r.command_name}"
+                f": {r.error}"
+            )
     _setup_viewport()
     print("  Done.")

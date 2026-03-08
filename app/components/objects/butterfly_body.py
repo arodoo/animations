@@ -1,5 +1,5 @@
 # File: app/components/objects/butterfly_body.py
-# Butterfly body from primitives (torso + head).
+# Butterfly body: torso, head, antennae.
 # All Rights Reserved Arodi Emmanuel
 
 from typing import Dict, List
@@ -9,7 +9,7 @@ def build_butterfly_body(
     name: str = 'Butterfly',
     pos: tuple = (0, 0, 3),
 ) -> List[Dict]:
-    """Spawn butterfly torso + head."""
+    """Spawn torso + head + antennae."""
     bx, by, bz = pos
     cmds: List[Dict] = []
     torso = f'{name}_Torso'
@@ -26,29 +26,52 @@ def build_butterfly_body(
         'cmd': 'scale_object',
         'args': {
             'name': torso,
-            'scale': (0.08, 0.25, 0.06),
+            'scale': (0.3, 0.9, 0.2),
         },
     })
+    cmds.append({
+        'cmd': 'apply_scale',
+        'args': {'name': torso},
+    })
+    # Head at LOCAL offset from torso
     cmds.append({
         'cmd': 'spawn_primitive',
         'args': {
             'name': head,
             'type': 'sphere',
-            'location': (bx, by + 0.3, bz),
+            'location': (0, 1.0, 0),
         },
     })
     cmds.append({
         'cmd': 'scale_object',
         'args': {
             'name': head,
-            'scale': (0.06, 0.06, 0.06),
+            'scale': (0.18, 0.18, 0.18),
         },
     })
     cmds.append({
         'cmd': 'parent_object',
-        'args': {
-            'child': head,
-            'parent': torso,
-        },
+        'args': {'child': head, 'parent': torso},
     })
+    for side, sx in (('L', 1), ('R', -1)):
+        an = f'{name}_Antenna{side}'
+        cmds.append({
+            'cmd': 'spawn_primitive',
+            'args': {
+                'name': an, 'type': 'cylinder',
+                'location': (sx * 0.1, 1.1, 0.15),
+                'radius': 0.02, 'depth': 0.5,
+            },
+        })
+        cmds.append({
+            'cmd': 'rotate_object',
+            'args': {
+                'name': an,
+                'rotation': (0.5, sx * 0.3, 0),
+            },
+        })
+        cmds.append({
+            'cmd': 'parent_object',
+            'args': {'child': an, 'parent': torso},
+        })
     return cmds

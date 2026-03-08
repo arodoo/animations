@@ -60,8 +60,11 @@ def build_barrage(
             },
         })
         cmds.append({
-            'cmd': 'hide_object',
-            'args': {'name': body},
+            'cmd': 'hide_at_frame',
+            'args': {
+                'name': body,
+                'frame': hit_f,
+            },
         })
         cmds += build_explosion(
             f'Exp{i}', target, hit_f,

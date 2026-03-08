@@ -1,5 +1,5 @@
 # File: scenes/missile_storm/animations/staging/materials.py
-# Materials for the missile storm scene.
+# Materials for butterfly meadow scene.
 # All Rights Reserved Arodi Emmanuel
 
 from typing import Dict, List
@@ -8,9 +8,6 @@ _MATS = [
     ('MatGrass', (0.15, 0.35, 0.08), 0),
     ('MatButterfly', (0.9, 0.5, 0.1), 2),
     ('MatButterflyWing', (0.95, 0.6, 0.15), 3),
-    ('MatMissile', (0.3, 0.3, 0.32), 0),
-    ('MatMissileNose', (0.7, 0.1, 0.1), 0),
-    ('MatExplosion', (1.0, 0.6, 0.05), 40),
     ('MatHouseWall', (0.85, 0.8, 0.7), 0),
     ('MatRoof', (0.45, 0.18, 0.1), 0),
     ('MatBarnWood', (0.5, 0.3, 0.15), 0),
@@ -18,6 +15,14 @@ _MATS = [
     ('MatCanopy', (0.1, 0.4, 0.08), 0),
     ('MatFence', (0.6, 0.45, 0.25), 0),
 ]
+
+_EXTRA: Dict[str, Dict] = {
+    'MatGrass': {
+        'roughness': 0.9,
+        'use_noise_texture': True,
+        'normal_strength': 0.25,
+    },
+}
 
 
 def build_storm_materials() -> List[Dict]:
@@ -29,7 +34,9 @@ def build_storm_materials() -> List[Dict]:
             'color': color,
         }
         if emit > 0:
-            args['emission'] = emit
+            args['emit'] = True
+            args['emit_strength'] = float(emit)
+        args.update(_EXTRA.get(name, {}))
         cmds.append({
             'cmd': 'create_material',
             'args': args,

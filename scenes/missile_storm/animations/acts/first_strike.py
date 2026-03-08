@@ -13,6 +13,15 @@ from app.components.objects import (
 from ..domain.timing import Timing
 from .strike_descent import build_missile_descent
 
+_BUTTERFLY_PARTS = [
+    'Butterfly_Torso',
+    'Butterfly_Head',
+    'Butterfly_WingL',
+    'Butterfly_WingR',
+    'Butterfly_AntennaL',
+    'Butterfly_AntennaR',
+]
+
 
 def _butterfly_pos_at(t: Timing) -> tuple:
     """Butterfly position at strike frame."""
@@ -55,7 +64,10 @@ def build_first_strike(
         radius=5.0,
     )
     cmds.append({
-        'cmd': 'hide_object',
-        'args': {'name': 'Butterfly_Torso'},
+        'cmd': 'hide_objects_at_frame',
+        'args': {
+            'names': _BUTTERFLY_PARTS,
+            'frame': timing.strike_explode,
+        },
     })
     return cmds

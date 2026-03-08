@@ -35,7 +35,10 @@ def build_missile_descent(
         },
     })
     cmds.append({
-        'cmd': 'hide_object',
-        'args': {'name': body},
+        'cmd': 'hide_at_frame',
+        'args': {
+            'name': body,
+            'frame': strike_f,
+        },
     })
     return cmds

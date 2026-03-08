@@ -7,3 +7,4 @@ from . import rotate_object
 from . import scale_object
 from . import transforms_rel
 from . import transform_utils
+from . import apply_transform

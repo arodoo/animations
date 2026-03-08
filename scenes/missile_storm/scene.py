@@ -1,5 +1,5 @@
 # File: scenes/missile_storm/scene.py
-# Missile Storm scene orchestrator.
+# Butterfly meadow scene orchestrator.
 # All Rights Reserved Arodi Emmanuel
 
 from typing import Any, Dict
@@ -16,9 +16,13 @@ def create_scene(
     timing: Timing = Timing(),
     cam_step: int = 4,
 ) -> Dict[str, Any]:
-    """Build and dispatch missile storm scene."""
-    total = timing.finale_end
-    batch = build_environment({
+    """Build and dispatch butterfly meadow scene."""
+    total = timing.flight_end
+    batch = [{'cmd': 'configure_eevee', 'args': {
+        'width': 1920, 'height': 1080,
+        'samples': 32,
+    }}]
+    batch += build_environment({
         'total_frames': total,
         'world_color': (0.45, 0.65, 0.85),
         'grid': False,

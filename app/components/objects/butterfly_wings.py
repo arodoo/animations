@@ -8,31 +8,29 @@ from typing import Dict, List
 
 def build_butterfly_wings(
     name: str = 'Butterfly',
-    pos: tuple = (0, 0, 3),
     start_f: int = 1,
     end_f: int = 480,
     flap_speed: int = 4,
 ) -> List[Dict]:
     """Build wings + flap animation."""
-    bx, by, bz = pos
     cmds: List[Dict] = []
     torso = f'{name}_Torso'
     for side, sx in (('L', 1), ('R', -1)):
         wn = f'{name}_Wing{side}'
-        wx = bx + sx * 0.2
+        # LOCAL offset from torso center
         cmds.append({
             'cmd': 'spawn_primitive',
             'args': {
                 'name': wn,
                 'type': 'plane',
-                'location': (wx, by, bz),
+                'location': (sx * 0.6, 0, 0),
             },
         })
         cmds.append({
             'cmd': 'scale_object',
             'args': {
                 'name': wn,
-                'scale': (0.35, 0.25, 1.0),
+                'scale': (1.0, 0.85, 0.1),
             },
         })
         cmds.append({

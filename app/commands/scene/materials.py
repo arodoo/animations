@@ -15,14 +15,19 @@ def create_material(args: Dict[str, Any]) -> DispatchResult:
     """Create a new material with optional emission for glowing objects."""
     mat_name = args.get('name', 'Material')
     color = tuple(args.get('color', (0.8, 0.8, 0.8, 1.0)))
+    if len(color) == 3:
+        color = color + (1.0,)
     emit = bool(args.get('emit', False))
     emit_strength = float(args.get('emit_strength', 5.0))
     use_noise = bool(args.get('use_noise_texture', False))
     roughness = float(args.get('roughness', 0.4))
     normal_strength = float(args.get('normal_strength', 0.0))
 
+    old = data.materials.get(mat_name)
+    if old and not is_mock():
+        data.materials.remove(old)
     mat = data.materials.new(mat_name)
-    mat.diffuse_color = color  # solid viewport color
+    mat.diffuse_color = color
 
     if not is_mock():
         # Node-based PBR material using Principled BSDF

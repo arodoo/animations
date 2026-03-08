@@ -1,5 +1,5 @@
 # File: scenes/missile_storm/animations/acts/butterfly_flight.py
-# Act 1: Butterfly flies over meadow for 20 seconds.
+# Butterfly flies over meadow and village for 2 minutes.
 # All Rights Reserved Arodi Emmanuel
 
 from typing import Dict, List
@@ -12,28 +12,25 @@ from app.components.objects import (
 from ..domain.timing import Timing
 from .flight_path import build_flight_path
 
-_WING_MATS = [
+_PART_MATS = [
+    ('Butterfly_Torso', 'MatButterfly'),
+    ('Butterfly_Head', 'MatButterfly'),
+    ('Butterfly_AntennaL', 'MatTrunk'),
+    ('Butterfly_AntennaR', 'MatTrunk'),
     ('Butterfly_WingL', 'MatButterflyWing'),
     ('Butterfly_WingR', 'MatButterflyWing'),
 ]
 
 
 def build_flight(timing: Timing) -> List[Dict]:
-    """Full Act 1: meadow + butterfly + path."""
+    """Full butterfly flight: meadow + body + path."""
     cmds: List[Dict] = []
     cmds += build_meadow()
     cmds += build_butterfly_body()
     cmds += build_butterfly_wings(
         end_f=timing.flight_end,
     )
-    cmds.append({
-        'cmd': 'assign_material',
-        'args': {
-            'object': 'Butterfly_Torso',
-            'material': 'MatButterfly',
-        },
-    })
-    for obj, mat in _WING_MATS:
+    for obj, mat in _PART_MATS:
         cmds.append({
             'cmd': 'assign_material',
             'args': {
