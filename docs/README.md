@@ -15,7 +15,7 @@ python -m pytest tests/e2e/ -v
 python -m pytest tests/e2e/scene/ -v
 ```
 
-**In Blender:** open `scenes/quasar_bh/launcher.py` in the Scripting tab
+**In Blender:** open any `scenes/*/launcher.py` in the Scripting tab
 and press **Run Script**. See [`docs/blender.md`](blender.md) for details.
 
 ---
@@ -25,26 +25,27 @@ and press **Run Script**. See [`docs/blender.md`](blender.md) for details.
 ```
 animations/
 ├── app/                  # Application layer
-│   ├── commands/         # All registered commands, grouped by concern
-│   │   ├── objects/      # spawn, clear_scene, hierarchy, management, visibility
-│   │   ├── transforms/   # move, rotate, scale (absolute + relative)
-│   │   ├── scene/        # materials, cameras, lights, world, render
-│   │   └── advanced/     # modifiers, collections
+│   ├── commands/         # Registered commands by concern
+│   │   ├── objects/      # spawn, hierarchy, visibility
+│   │   ├── transforms/   # move, rotate, scale
+│   │   ├── scene/        # materials, cameras, lights
+│   │   └── advanced/     # modifiers, collections, rigid body
+│   ├── components/       # Reusable builders
+│   │   └── objects/      # 3D object builders (butterfly, missile...)
 │   ├── kernel/           # dispatcher + registry
 │   ├── domain/           # DispatchResult, errors
-│   ├── infra/            # Blender bridge (real bpy ↔ mock)
-│   └── scene/            # Reusable scene helpers (atmospheres, etc.)
+│   └── infra/            # Blender bridge (bpy <> mock)
 ├── scenes/               # Standalone animation scenes
-│   └── quasar_bh/        # Black-hole quasar (scene.py + launcher.py)
+│   ├── quasar_bh/        # Black-hole quasar
+│   ├── fractal_abyss/    # Mathematical number descent
+│   ├── missile_storm/    # Butterfly + missile barrage
+│   ├── euler_diagram/    # Mathematical set hierarchy
+│   ├── solar_system/     # Procedural solar system
+│   └── resonance_box/    # Standing wave visualisation
 ├── tests/
 │   ├── mocks/            # Full Blender API mock
 │   └── e2e/              # End-to-end tests (75 passing)
 └── docs/
-    ├── architecture.md   # DDD layers, SOLID, dispatch flow, error handling
-    ├── blender.md        # Running in Blender, bridge, quality presets
-    ├── testing.md        # Test structure, mocks, best practices
-    ├── commands/         # Command reference, one file per concern
-    └── scenes/           # Per-scene documentation
 ```
 
 ---
@@ -53,10 +54,11 @@ animations/
 
 | Category | Doc | Commands |
 |----------|-----|----------|
-| Objects | [`commands/objects.md`](commands/objects.md) | spawn_primitive, clear_scene, parent, clone… |
+| Objects | [`commands/objects.md`](commands/objects.md) | spawn, clear, parent, clone, visibility |
 | Transforms | [`commands/transforms.md`](commands/transforms.md) | move, rotate, scale, relative, utils |
 | Scene | [`commands/scene.md`](commands/scene.md) | materials, cameras, lights, world, eevee |
-| Animation | [`commands/animation.md`](commands/animation.md) | keyframes, frame range, timeline |
+| Animation | [`commands/animation.md`](commands/animation.md) | keyframes, frame range |
+| Advanced | [`commands/advanced.md`](commands/advanced.md) | modifiers, collections, rigid body |
 
 ---
 
@@ -64,18 +66,29 @@ animations/
 
 | Scene | Path | Description |
 |-------|------|-------------|
-| Quasar Black Hole | `scenes/quasar_bh/` | Keplerian accretion disk, jets, spherical camera |
+| Quasar Black Hole | `scenes/quasar_bh/` | Keplerian accretion disk, jets, orbit camera |
+| Fractal Abyss | `scenes/fractal_abyss/` | 5-act mathematical descent into fractals |
+| Missile Storm | `scenes/missile_storm/` | Butterfly + 80-missile village destruction |
+| Euler Diagram | `scenes/euler_diagram/` | Mathematical set hierarchy spiral |
 
-See [`docs/scenes/quasar_bh.md`](scenes/quasar_bh.md).
+See [`docs/scenes/`](scenes/) for per-scene documentation.
+
+---
+
+## Reusable Components
+
+| Category | Doc | Contents |
+|----------|-----|----------|
+| Objects | [`components/objects.md`](components/objects.md) | butterfly, missile, explosion, house, barn, tree, meadow, fence |
 
 ---
 
 ## Key Design Principles
 
-- **DDD** — domain / application / infrastructure separation
-- **SOLID** — single-responsibility per file, open for extension
-- **Bridge pattern** — same commands run on real Blender or the offline mock
-- **Quality presets** — `'low'` / `'medium'` / `'high'` scale cost to hardware
+- **DDD** -- domain / application / infrastructure separation
+- **SOLID** -- single-responsibility per file, open for extension
+- **Bridge pattern** -- same commands run on real Blender or the offline mock
+- **Reusable farm** -- complex scenes = combinations of simple components
 
 ---
 

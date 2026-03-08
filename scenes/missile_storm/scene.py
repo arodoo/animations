@@ -1,0 +1,33 @@
+# File: scenes/missile_storm/scene.py
+# Missile Storm scene orchestrator.
+# All Rights Reserved Arodi Emmanuel
+
+from typing import Any, Dict
+
+from app.kernel.dispatcher import dispatch_batch
+from app.components.env_builder import build_environment
+import app.commands
+
+from .animations.domain.timing import Timing
+from .animations.builder import build_missile_storm
+
+
+def create_scene(
+    timing: Timing = Timing(),
+    cam_step: int = 4,
+) -> Dict[str, Any]:
+    """Build and dispatch missile storm scene."""
+    total = timing.finale_end
+    batch = build_environment({
+        'total_frames': total,
+        'world_color': (0.45, 0.65, 0.85),
+        'grid': False,
+        'lights': [],
+    })
+    batch += build_missile_storm(timing, cam_step)
+    results = dispatch_batch(batch)
+    return {
+        'results': results,
+        'frames': total,
+        'status': 'OK',
+    }

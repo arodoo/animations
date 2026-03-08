@@ -4,3 +4,4 @@
 
 from . import modifiers
 from . import collections
+from . import rigid_body
