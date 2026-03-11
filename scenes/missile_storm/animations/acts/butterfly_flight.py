@@ -17,18 +17,24 @@ _PART_MATS = [
     ('Butterfly_Head', 'MatButterfly'),
     ('Butterfly_AntennaL', 'MatTrunk'),
     ('Butterfly_AntennaR', 'MatTrunk'),
-    ('Butterfly_WingL', 'MatButterflyWing'),
-    ('Butterfly_WingR', 'MatButterflyWing'),
+    ('Butterfly_WingFL', 'MatButterflyWing'),
+    ('Butterfly_WingFR', 'MatButterflyWing'),
+    ('Butterfly_WingHL', 'MatButterflyWing'),
+    ('Butterfly_WingHR', 'MatButterflyWing'),
 ]
 
 
-def build_flight(timing: Timing) -> List[Dict]:
+def build_flight(
+    timing: Timing,
+    half_cycle: int = 6,
+) -> List[Dict]:
     """Full butterfly flight: meadow + body + path."""
     cmds: List[Dict] = []
     cmds += build_meadow()
     cmds += build_butterfly_body()
     cmds += build_butterfly_wings(
         end_f=timing.flight_end,
+        half_cycle=half_cycle,
     )
     for obj, mat in _PART_MATS:
         cmds.append({

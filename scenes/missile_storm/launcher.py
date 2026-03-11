@@ -17,6 +17,9 @@ TIMING = Timing(
     flight_end=2880,
 )
 CAM_STEP = 4
+# Frames per flap half-stroke (up→down or down→up).
+# 6 = ~2 flaps/sec (gentle). 4 = faster. 8 = slow.
+WING_HALF_CYCLE = 6
 
 # -- Purge cache -----------------------------
 import shutil
@@ -58,7 +61,9 @@ if __name__ == '__main__':
     print("=" * 50)
     print("  BUTTERFLY MEADOW")
     print("=" * 50)
-    result = create_scene(TIMING, CAM_STEP)
+    result = create_scene(
+        TIMING, CAM_STEP, WING_HALF_CYCLE,
+    )
     ok_n = sum(
         1 for r in result['results'] if r.success
     )

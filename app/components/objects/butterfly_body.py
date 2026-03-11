@@ -26,7 +26,7 @@ def build_butterfly_body(
         'cmd': 'scale_object',
         'args': {
             'name': torso,
-            'scale': (0.3, 0.9, 0.2),
+            'scale': (0.22, 0.72, 0.22),
         },
     })
     cmds.append({
@@ -39,14 +39,14 @@ def build_butterfly_body(
         'args': {
             'name': head,
             'type': 'sphere',
-            'location': (0, 1.0, 0),
+            'location': (0, 0.82, 0.08),
         },
     })
     cmds.append({
         'cmd': 'scale_object',
         'args': {
             'name': head,
-            'scale': (0.18, 0.18, 0.18),
+            'scale': (0.22, 0.22, 0.22),
         },
     })
     cmds.append({
