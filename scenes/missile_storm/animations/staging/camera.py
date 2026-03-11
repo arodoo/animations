@@ -25,13 +25,13 @@ def build_storm_camera(
                 'focal_length': 50.0,
             },
         },
+        {
+            'cmd': 'set_camera_target',
+            'args': {
+                'name': 'StormCam',
+                'target': (0, 0, 8),
+            },
+        },
     ]
     cmds += build_follow_phase(timing, step)
-    cmds.append({
-        'cmd': 'set_camera_target',
-        'args': {
-            'name': 'StormCam',
-            'target': (0, 0, 8),
-        },
-    })
     return cmds

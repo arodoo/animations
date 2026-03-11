@@ -23,7 +23,7 @@ def build_butterfly_wings(
             'args': {
                 'name': wn,
                 'type': 'plane',
-                'location': (sx * 0.6, 0, 0),
+                'location': (sx * 1.0, 0, 0),
             },
         })
         cmds.append({
