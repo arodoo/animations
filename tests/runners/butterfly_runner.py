@@ -56,8 +56,7 @@ def _print_obj(name: str) -> None:
 _PARTS = [
     'Butterfly_Torso', 'Butterfly_Head',
     'Butterfly_AntennaL', 'Butterfly_AntennaR',
-    'Butterfly_WingFL', 'Butterfly_WingFR',
-    'Butterfly_WingHL', 'Butterfly_WingHR',
+    'Butterfly_WingL', 'Butterfly_WingR',
 ]
 
 

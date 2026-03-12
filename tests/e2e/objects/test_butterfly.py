@@ -29,15 +29,10 @@ _PARTS = [
     'Butterfly_Head',
     'Butterfly_AntennaL',
     'Butterfly_AntennaR',
-    'Butterfly_WingFL',
-    'Butterfly_WingFR',
-    'Butterfly_WingHL',
-    'Butterfly_WingHR',
+    'Butterfly_WingL',
+    'Butterfly_WingR',
 ]
-_WINGS = [
-    'Butterfly_WingFL', 'Butterfly_WingFR',
-    'Butterfly_WingHL', 'Butterfly_WingHR',
-]
+_WINGS = ['Butterfly_WingL', 'Butterfly_WingR']
 _TIMING = Timing(flight_start=1, flight_end=120)
 _SPEED = 0.5
 _ALT = 8.0
@@ -109,6 +104,17 @@ class TestButterflyBuild:
                 f'{name} scale kf={len(kfs)}'
             )
 
+    def test_only_two_wings(self):
+        _build()
+        old_wings = [
+            'Butterfly_WingFL', 'Butterfly_WingFR',
+            'Butterfly_WingHL', 'Butterfly_WingHR',
+        ]
+        for name in old_wings:
+            assert not data.objects.get(name), (
+                f'old wing still present: {name}'
+            )
+
     def test_torso_has_body_dynamics(self):
         _build()
         torso = data.objects.get('Butterfly_Torso')
@@ -133,9 +139,8 @@ class TestFlightPath:
         )
         loc1 = kfs.get(1)
         assert loc1 is not None, 'no kf at frame 1'
-        z = loc1[2]
-        assert 7.0 < z < 9.0, (
-            f'altitude at f1={z}, expected ~8.0'
+        assert 7.0 < loc1[2] < 9.0, (
+            f'altitude at f1={loc1[2]}, expected ~8.0'
         )
 
     def test_no_flight_failures(self):
@@ -149,7 +154,6 @@ class TestFlightPath:
 
 class TestCameraFollow:
     def test_camera_tracks_butterfly_x(self):
-        """Camera x must match butterfly x (straight)."""
         reset()
         cmds = build_follow_phase(
             _TIMING, step=4,
@@ -167,7 +171,6 @@ class TestCameraFollow:
             )
 
     def test_camera_behind_butterfly(self):
-        """Camera y < butterfly y at every frame."""
         reset()
         cmds = build_follow_phase(
             _TIMING, step=4,
@@ -183,6 +186,6 @@ class TestCameraFollow:
             t = f - _TIMING.flight_start
             butterfly_y = t * _SPEED
             assert loc[1] < butterfly_y, (
-                f'f{f}: cam.y={loc[1]:.1f}'
-                f' not behind butterfly_y={butterfly_y:.1f}'
+                f'f{f}: cam.y={loc[1]:.1f} '
+                f'not < butterfly_y={butterfly_y:.1f}'
             )

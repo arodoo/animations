@@ -1,62 +1,81 @@
 # File: app/components/objects/butterfly/_wings.py
-# Triangle wings: cone apex toward body, no overlap.
+# Single polygon wing per side; proper butterfly shape.
 # All Rights Reserved Arodi Emmanuel
 
-import math
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
-_UP, _DOWN = 0.65, -0.38        # exaggerated angles
-_SX_UP, _SY_UP = 0.90, 0.86    # squash at peak
-_SX_DW, _SY_DW = 1.08, 1.06    # stretch at trough
-_BODY_EDGE = 0.22               # torso radius in X/Z
-# (sfx, sx, y_off, radius, y_scale, rot_z)
-_WINGS = [
-    ('WingFL',  1,  0.30, 1.00, 0.70, math.pi),
-    ('WingFR', -1,  0.30, 1.00, 0.70, 0.0),
-    ('WingHL',  1, -0.40, 0.65, 0.65, math.pi),
-    ('WingHR', -1, -0.40, 0.65, 0.65, 0.0),
-]
-_PHASES = [0, 0, 2, 2]  # hindwings lag 2f
+_UP, _DOWN = 0.65, -0.38
+_SX_UP, _SY_UP = 0.90, 0.86
+_SX_DW, _SY_DW = 1.08, 1.06
+_BODY_EDGE = 0.22
+
+# Wing silhouette in local XY plane.
+# Attachment at origin (body edge), extends +X.
+# Mirrors to -X for right side.
+_BASE: Tuple = (
+    (0.00,  0.12),   # top body attachment
+    (0.40,  0.50),   # forewing leading curve
+    (0.85,  0.58),   # forewing apex
+    (1.20,  0.22),   # forewing outer tip
+    (1.10, -0.06),   # forewing lower
+    (0.90, -0.30),   # outer notch
+    (0.75, -0.55),   # hindwing outer
+    (0.45, -0.62),   # hindwing tip
+    (0.16, -0.50),   # hindwing inner curve
+    (0.00, -0.22),   # bottom body attachment
+)
+_SIDES = [('WingL', 1), ('WingR', -1)]
 
 
-def _spawn(wn, sx, yo, r, ys, rz, torso):
-    xo = sx * (_BODY_EDGE + r)
+def _verts(sx: int) -> List:
+    pts = [(sx * x, y) for x, y in _BASE]
+    return list(reversed(pts)) if sx < 0 else pts
+
+
+def _spawn(
+    wn: str, sx: int, torso: str,
+) -> List[Dict]:
     return [
-        {'cmd': 'spawn_primitive', 'args': {
-            'name': wn, 'type': 'cone',
-            'vertices': 3, 'radius1': r,
-            'radius2': 0, 'depth': 0.04,
-            'location': (xo, yo, 0.22),
-        }},
-        {'cmd': 'scale_object', 'args': {
-            'name': wn, 'scale': (1.0, ys, 1.0),
+        {'cmd': 'spawn_polygon', 'args': {
+            'name': wn,
+            'verts': _verts(sx),
+            'location': (sx * _BODY_EDGE, 0.0, 0.22),
         }},
         {'cmd': 'parent_object', 'args': {
             'child': wn, 'parent': torso,
         }},
     ]
 
-def _kf(wn, sx, ys, rz, f, up):
+
+def _kf(
+    wn: str, sx: int, f: int, up: bool,
+) -> List[Dict]:
     a = sx * (_UP if up else _DOWN)
-    mx, my = (_SX_UP, _SY_UP) if up else (_SX_DW, _SY_DW)
+    mx = _SX_UP if up else _SX_DW
+    my = _SY_UP if up else _SY_DW
     return [
         {'cmd': 'rotate_object', 'args': {
             'name': wn, 'frame': f,
-            'rotation': (0, a, rz),
+            'rotation': (0, a, 0),
         }},
         {'cmd': 'scale_object', 'args': {
             'name': wn, 'frame': f,
-            'scale': (mx, ys * my, 1.0),
+            'scale': (mx, my, 1.0),
         }},
     ]
 
-def _flap(wn, sx, ys, rz, start, end, half, ph):
+
+def _flap(
+    wn: str, sx: int,
+    start: int, end: int, half: int,
+) -> List[Dict]:
     cmds: List[Dict] = []
-    up, f = False, start + ph  # DOWN = anticipation
+    up, f = False, start
     while f <= end:
-        cmds += _kf(wn, sx, ys, rz, f, up)
+        cmds += _kf(wn, sx, f, up)
         up, f = not up, f + half
     return cmds
+
 
 def build_wings(
     name: str,
@@ -64,16 +83,13 @@ def build_wings(
     end_f: int,
     half_cycle: int,
 ) -> List[Dict]:
-    """Triangle wings; apex-toward-body; squash+stretch."""
+    """Single polygon wing per side; squash+stretch."""
     torso = f'{name}_Torso'
     cmds: List[Dict] = []
-    for (sfx, sx, yo, r, ys, rz), ph in zip(
-        _WINGS, _PHASES,
-    ):
+    for sfx, sx in _SIDES:
         wn = f'{name}_{sfx}'
-        cmds += _spawn(wn, sx, yo, r, ys, rz, torso)
+        cmds += _spawn(wn, sx, torso)
         cmds += _flap(
-            wn, sx, ys, rz, start_f, end_f,
-            half_cycle, ph,
+            wn, sx, start_f, end_f, half_cycle,
         )
     return cmds

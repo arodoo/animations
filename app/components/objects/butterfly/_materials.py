@@ -9,10 +9,8 @@ _PART_MATS = [
     ('Head',     'MatButterfly'),
     ('AntennaL', 'MatTrunk'),
     ('AntennaR', 'MatTrunk'),
-    ('WingFL',   'MatButterflyWing'),
-    ('WingFR',   'MatButterflyWing'),
-    ('WingHL',   'MatButterflyWing'),
-    ('WingHR',   'MatButterflyWing'),
+    ('WingL',    'MatButterflyWing'),
+    ('WingR',    'MatButterflyWing'),
 ]
 
 
