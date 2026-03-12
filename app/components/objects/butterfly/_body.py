@@ -4,6 +4,9 @@
 
 from typing import Dict, List
 
+_SD = (1.06, 0.94, 1.06)  # downstroke: compact/effort
+_SU = (0.97, 1.04, 0.97)  # upstroke: graceful stretch
+
 
 def build_body(
     name: str,
@@ -53,4 +56,23 @@ def build_body(
                 'child': an, 'parent': torso,
             }},
         ]
+    return cmds
+
+
+def build_body_dynamics(
+    name: str,
+    start_f: int,
+    end_f: int,
+    half_cycle: int,
+) -> List[Dict]:
+    """Squash+stretch torso synced to wingbeat (#1)."""
+    torso = f'{name}_Torso'
+    cmds: List[Dict] = []
+    up, f = False, start_f
+    while f <= end_f:
+        s = _SU if up else _SD
+        cmds.append({'cmd': 'scale_object', 'args': {
+            'name': torso, 'frame': f, 'scale': s,
+        }})
+        up, f = not up, f + half_cycle
     return cmds

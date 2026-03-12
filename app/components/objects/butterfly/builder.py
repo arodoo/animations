@@ -5,7 +5,7 @@
 
 from typing import Dict, List
 
-from ._body import build_body
+from ._body import build_body, build_body_dynamics
 from ._wings import build_wings
 from ._materials import assign_materials
 
@@ -25,5 +25,8 @@ def build_butterfly(
     cmds: List[Dict] = []
     cmds += build_body(name, pos)
     cmds += build_wings(name, start_f, end_f, half_cycle)
+    cmds += build_body_dynamics(
+        name, start_f, end_f, half_cycle,
+    )
     cmds += assign_materials(name)
     return cmds

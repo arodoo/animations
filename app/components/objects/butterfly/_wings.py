@@ -21,7 +21,7 @@ def _spawn(wn, sx, oy, sc, torso):
     return [
         {'cmd': 'spawn_primitive', 'args': {
             'name': wn, 'type': 'plane',
-            'location': (xo, oy, 0),
+            'location': (xo, oy, 0.22),
         }},
         {'cmd': 'scale_object', 'args': {
             'name': wn, 'scale': sc,
