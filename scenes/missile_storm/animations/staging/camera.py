@@ -11,6 +11,9 @@ from .camera_follow import build_follow_phase
 def build_storm_camera(
     timing: Timing,
     step: int = 4,
+    half_cycle: int = 6,
+    speed: float = 0.5,
+    altitude: float = 8.0,
 ) -> List[Dict]:
     """Camera rig: create + follow butterfly."""
     cmds: List[Dict] = [
@@ -29,9 +32,12 @@ def build_storm_camera(
             'cmd': 'set_camera_target',
             'args': {
                 'name': 'StormCam',
-                'target': (0, 0, 8),
+                'target': (0, 0, altitude),
             },
         },
     ]
-    cmds += build_follow_phase(timing, step)
+    cmds += build_follow_phase(
+        timing, step,
+        half_cycle, speed, altitude,
+    )
     return cmds

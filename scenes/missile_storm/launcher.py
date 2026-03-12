@@ -20,6 +20,10 @@ CAM_STEP = 4
 # Frames per flap half-stroke (up→down or down→up).
 # 6 = ~2 flaps/sec (gentle). 4 = faster. 8 = slow.
 WING_HALF_CYCLE = 6
+# Flight direction: straight +Y at this speed (units/frame).
+FLIGHT_SPEED = 0.5
+# Altitude above ground (meters). Bob adds ±0.35 m.
+FLIGHT_ALTITUDE = 8.0
 
 # -- Purge cache -----------------------------
 import shutil
@@ -63,6 +67,7 @@ if __name__ == '__main__':
     print("=" * 50)
     result = create_scene(
         TIMING, CAM_STEP, WING_HALF_CYCLE,
+        FLIGHT_SPEED, FLIGHT_ALTITUDE,
     )
     ok_n = sum(
         1 for r in result['results'] if r.success
