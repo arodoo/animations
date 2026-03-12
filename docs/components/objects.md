@@ -7,40 +7,33 @@ a 3D object from primitives. Import from `app.components.objects`.
 
 ---
 
-## build_butterfly_body
+## build_butterfly
 
-Torso (elongated sphere) + head (small sphere), parented.
-
-```python
-from app.components.objects import build_butterfly_body
-
-cmds = build_butterfly_body(
-    name='Butterfly',       # prefix for parts
-    pos=(0, 0, 3),          # spawn position
-)
-# Creates: Butterfly_Torso, Butterfly_Head
-```
-
----
-
-## build_butterfly_wings
-
-Two plane wings parented to torso with flapping keyframes.
+Complete butterfly character: body + 4-wing system + materials.
+Root object `{name}_Torso` for external animation (flight path).
 
 ```python
-from app.components.objects import build_butterfly_wings
+from app.components.objects import build_butterfly
 
-cmds = build_butterfly_wings(
-    name='Butterfly',
-    pos=(0, 0, 3),
+cmds = build_butterfly(
+    name='Butterfly',       # part prefix
+    pos=(0, 0, 3),          # initial spawn
     start_f=1,              # flap start frame
-    end_f=480,              # flap end frame
-    flap_speed=4,           # keyframe interval
+    end_f=2880,             # flap end frame
+    half_cycle=6,           # frames per half-stroke
 )
-# Creates: Butterfly_WingL, Butterfly_WingR
+# Creates: Butterfly_Torso (root)
+#          ├─ Butterfly_Head, AntennaL, AntennaR
+#          └─ WingFL, WingFR, WingHL, WingHR
 ```
 
-Flap amplitude: 0.6 rad, sinusoidal rotation on Y axis.
+**Key points:**
+- 4-wing design: forewings (larger) + hindwings (smaller)
+- Peak/trough keyframes with BEZIER interpolation (60% fewer keys)
+- Asymmetric dihedral: up=0.52 rad, down=-0.28 rad
+- Hindwings phase-delayed 2 frames (overlapping action)
+
+**See:** `docs/components/butterfly.md` for full architecture & customization.
 
 ---
 

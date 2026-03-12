@@ -80,6 +80,7 @@ See [`docs/scenes/`](scenes/) for per-scene documentation.
 | Category | Doc | Contents |
 |----------|-----|----------|
 | Objects | [`components/objects.md`](components/objects.md) | butterfly, missile, explosion, house, barn, tree, meadow, fence |
+| Butterfly | [`components/butterfly.md`](components/butterfly.md) | Character design, wing mechanics, SOLID architecture |
 
 ---
 

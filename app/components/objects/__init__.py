@@ -2,8 +2,7 @@
 # Reusable 3D object builders for scene composition.
 # All Rights Reserved Arodi Emmanuel
 
-from .butterfly_body import build_butterfly_body
-from .butterfly_wings import build_butterfly_wings
+from .butterfly import build_butterfly
 from .missile_body import build_missile
 from .missile_trail import build_missile_trail
 from .explosion import build_explosion
@@ -14,8 +13,7 @@ from .meadow import build_meadow
 from .fence import build_fence
 
 __all__ = [
-    'build_butterfly_body',
-    'build_butterfly_wings',
+    'build_butterfly',
     'build_missile',
     'build_missile_trail',
     'build_explosion',

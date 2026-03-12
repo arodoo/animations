@@ -16,3 +16,5 @@ When try/catch, catch should always trow the specific error, never be empty
 
 80/60 RULE
 MAX: 80L/file, 60char/line (CI@80). JSON exempt. PRE-WRITE: Lines>=70 OR chars>=55? SPLIT NOW. SPLIT: DDD layers (domain/app/infra), 1 concern/file NEVER: Compress, defer, ignore DDD MAX: Entity(50L) ValueObj(30L) Service(60L) UseCase(55L) DTO(40L) Mapper(45L) Repo(60L) Adapter(55L)
+
+# !ALWAYS ANIMATE USING 'Disney's 12 Principles of Animation'¡
